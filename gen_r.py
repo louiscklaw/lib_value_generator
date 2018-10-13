@@ -11,7 +11,7 @@ from math import log10, floor
 
 from string import Template
 
-LIB_FILE_PATH='/home/logic/_workspace/kicad/kicad_library/kicad-symbols/taobao_r.lib'
+LIB_FILE_PATH='/home/logic/_workspace/kicad/kicad_library/kicad-symbols/taobao-r.lib'
 DCM_FILE_PATH=LIB_FILE_PATH.replace('.lib','.dcm')
 
 R_LIB_TEMPLATE=Template("""EESchema-LIBRARY Version 2.4
@@ -28,10 +28,10 @@ $R_CONTENT
 R_LIB_UNIT_TEMPLATE=Template("""#
 # $R_THREE_DIGIT_VALUE
 #
-DEF $R_THREE_DIGIT_VALUE R 0 0 N Y 1 F N
-F0 "R" 80 0 50 V V C CNN
-F1 "$R_THREE_DIGIT_VALUE" 0 0 50 V V C CNN
-F2 "" -70 0 50 V I C CNN
+DEF $R_THREE_DIGIT_VALUE R 0 10 N N 1 F N
+F0 "R" 30 20 50 H V L CNN
+F1 "$R_THREE_DIGIT_VALUE" 30 -40 50 H V L CNN
+F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $$FPLIST
  R_*
@@ -39,9 +39,9 @@ $$FPLIST
  Resistor_SMD:R_0603_*
 $$ENDFPLIST
 DRAW
-S -40 -100 40 100 0 1 10 N
-X ~ 1 0 150 50 D 50 50 1 1 P
-X ~ 2 0 -150 50 U 50 50 1 1 P
+S -30 70 30 -70 0 1 8 N
+X ~ 1 0 100 30 D 50 50 1 1 P
+X ~ 2 0 -100 30 U 50 50 1 1 P
 ENDDRAW
 ENDDEF
 """)
@@ -49,7 +49,7 @@ ENDDEF
 R_DCM_UNIT_TEMPLATE=Template("""#
 $$CMP $R_THREE_DIGIT_VALUE
 D Resistor
-K r res resistor $R_THREE_DIGIT_VALUE $R_TEXT_VALUE
+K R r res resistor $R_THREE_DIGIT_VALUE $R_TEXT_VALUE
 F ~
 $$ENDCMP
 """)
@@ -67,14 +67,21 @@ def parseTextCode(number_value):
     if number_value.find('K') == 3:
         factor = 1000
 
-    return int(number_value.replace('K','')) * factor
+    return float(number_value.replace('K','')) * factor
 
 def getThreeDigitCode(int_r_value):
-    str_r_value = str(int_r_value)
-    no_of_zero = floor(log10(int_r_value))
-    left_2_digit = str_r_value[0:2]
-    last_digit = str(no_of_zero-1)
-    return left_2_digit+last_digit
+    try:
+        if int_r_value == 0:
+            return '0'
+        else:
+            str_r_value = str(int_r_value)
+            no_of_zero = floor(log10(int_r_value))
+            left_2_digit = str_r_value[0:2]
+            last_digit = str(no_of_zero-1)
+            return left_2_digit+last_digit
+    except Exception as e:
+        pprint(int_r_value)
+
 
 def getLibFile(three_digit_codes):
     text_content=[]
