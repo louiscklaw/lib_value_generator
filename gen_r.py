@@ -73,9 +73,14 @@ def getThreeDigitCode(int_r_value):
     try:
         if int_r_value == 0:
             return '0'
+        if int_r_value < 10:
+            return '%dR0' % int_r_value
+            sys.exit()
         else:
             str_r_value = str(int_r_value)
             no_of_zero = floor(log10(int_r_value))
+            no_of_zero = int(no_of_zero)
+
             left_2_digit = str_r_value[0:2]
             last_digit = str(no_of_zero-1)
             return left_2_digit+last_digit
@@ -109,6 +114,8 @@ def getDcmFile(three_digit_codes):
     text_to_write = R_DCM_TEMPLATE.substitute(
         R_CONTENT = ''.join(text_content)
     )
+
+    text_to_write = text_to_write.replace('\n\n','\n')
 
     with open(DCM_FILE_PATH, 'w') as f:
         f.write(text_to_write)

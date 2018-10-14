@@ -11,7 +11,7 @@ from string import Template
 import csv
 
 
-LIB_FILE_PATH='/home/logic/_workspace/kicad/kicad_library/kicad-symbols/taobao-c.lib'
+LIB_FILE_PATH='/home/logic/_workspace/kicad/kicad_library/kicad-symbols/taobao-tc.lib'
 DCM_FILE_PATH=LIB_FILE_PATH.replace('.lib','.dcm')
 
 C_LIB_TEMPLATE=Template("""EESchema-LIBRARY Version 2.4
@@ -33,23 +33,21 @@ F1 "$C_VALUE" 10 -80 50 H V L CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $$FPLIST
- C_0806*
- C_0603*
- C_*
+ CP_EIA*
 $$ENDFPLIST
 DRAW
-P 2 0 1 13 -60 -20 60 -20 N
-P 2 0 1 12 -60 20 60 20 N
-X ~ 1 0 100 80 D 50 50 1 1 P
-X ~ 2 0 -100 80 U 50 50 1 1 P
+P 2 0 1 20 -80 -30 80 -30 N
+P 2 0 1 20 -80 30 80 30 N
+X ~ 1 0 150 110 D 50 50 1 1 P
+X ~ 2 0 -150 110 U 50 50 1 1 P
 ENDDRAW
 ENDDEF
 """)
 
 C_DCM_UNIT_TEMPLATE=Template("""#
 $$CMP $C_VALUE
-D Unpolarized capacitor, small symbol, $C_KEYWORD
-K capacitor cap $C_VALUE $C_KEYWORD
+D Polarized capacitor, small symbol
+K cap capacitor
 F ~
 $$ENDCMP
 """)
@@ -91,6 +89,8 @@ def getLibFile(three_digit_codes):
         text_content.append(C_LIB_UNIT_TEMPLATE.substitute(C_VALUE=three_digit_code))
 
     text_to_write = C_LIB_TEMPLATE.substitute(C_CONTENT=''.join(text_content)).strip()
+    text_to_write = text_to_write.replace('\n\n','\n')
+
 
     with open(LIB_FILE_PATH, 'w') as f:
         f.write(text_to_write)
@@ -113,17 +113,27 @@ def getDcmFile(three_digit_codes):
 
 def main():
     readKeywordTable()
-    with open('c_value_list.csv','r') as f:
+    with open('tc_value_list.csv','r') as f:
         raw_lines = f.readlines()
         raw_values = []
         for test_line in raw_lines:
-            c_keyword = ''
-            test_line = test_line.strip()
-            if test_line.find('(') > 0:
-                test_line = test_line.split('(')[1].replace(')','')
-                p_value, n_value, u_value = d_keyword_lookup[test_line]['value']
-                c_keyword = ' ,'.join([p_value+'(p)', n_value+'(n)', u_value+'(u)'])
-            raw_values.append(('C'+test_line.lower(),c_keyword))
+            try:
+
+                c_keyword = ''
+                test_line = test_line.strip()
+                # if test_line.find('(') > 0:
+                #     test_line = test_line.split('(')[1].replace(')','')
+                #     p_value, n_value, u_value = d_keyword_lookup[test_line]['value']
+                #     c_keyword = ' ,'.join([p_value+'(p)', n_value+'(n)', u_value+'(u)'])
+                if len(test_line) > 0:
+                    v_value, c_value = test_line.split(',')
+                    raw_values.append(('TC'+c_value,v_value))
+                pass
+            except Exception as e:
+                pprint(test_line)
+                pass
+
+
 
         getLibFile(raw_values)
         getDcmFile(raw_values)

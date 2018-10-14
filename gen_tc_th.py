@@ -11,7 +11,7 @@ from string import Template
 import csv
 
 
-LIB_FILE_PATH='/home/logic/_workspace/kicad/kicad_library/kicad-symbols/taobao-c.lib'
+LIB_FILE_PATH='/home/logic/_workspace/kicad/kicad_library/kicad-symbols/taobao-tc-th.lib'
 DCM_FILE_PATH=LIB_FILE_PATH.replace('.lib','.dcm')
 
 C_LIB_TEMPLATE=Template("""EESchema-LIBRARY Version 2.4
@@ -113,7 +113,7 @@ def getDcmFile(three_digit_codes):
 
 def main():
     readKeywordTable()
-    with open('c_value_list.csv','r') as f:
+    with open('tc_th_value_list.csv','r') as f:
         raw_lines = f.readlines()
         raw_values = []
         for test_line in raw_lines:
@@ -121,8 +121,11 @@ def main():
             test_line = test_line.strip()
             if test_line.find('(') > 0:
                 test_line = test_line.split('(')[1].replace(')','')
-                p_value, n_value, u_value = d_keyword_lookup[test_line]['value']
-                c_keyword = ' ,'.join([p_value+'(p)', n_value+'(n)', u_value+'(u)'])
+                # p_value, n_value, u_value = d_keyword_lookup[test_line]['value']
+                # c_keyword = ' ,'.join([p_value+'(p)', n_value+'(n)', u_value+'(u)'])
+
+
+
             raw_values.append(('C'+test_line.lower(),c_keyword))
 
         getLibFile(raw_values)

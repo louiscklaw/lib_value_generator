@@ -103,6 +103,7 @@ def getDcmFile(three_digit_codes):
     c_content = ''.join(text_content)
 
     text_to_write = C_DCM_TEMPLATE.substitute(C_CONTENT = c_content)
+    text_to_write = text_to_write.replace('\n\n','\n')
 
     with open(DCM_FILE_PATH, 'w') as f:
         f.write(text_to_write)
