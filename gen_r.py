@@ -94,7 +94,7 @@ def getLibFile(three_digit_codes):
         R_CONTENT=''.join(text_content)
     )
 
-    with open(LIB_FILE_PATH, 'r+') as f:
+    with open(LIB_FILE_PATH, 'w') as f:
         f.write(text_to_write)
 
 
@@ -110,7 +110,7 @@ def getDcmFile(three_digit_codes):
         R_CONTENT = ''.join(text_content)
     )
 
-    with open(DCM_FILE_PATH, 'r+') as f:
+    with open(DCM_FILE_PATH, 'w') as f:
         f.write(text_to_write)
 
 def main():
