@@ -69,35 +69,55 @@ def parseTextCode(number_value):
 
     return float(number_value.replace('K','')) * factor
 
-def getThreeDigitCode(int_r_value):
+def getThreeDigitCode(str_r_value):
+    float_r_value = float(str_r_value)
+    str_r_value = str(str_r_value)
     try:
-        if int_r_value == 0:
+        if float_r_value == 0:
             return '0'
-        if int_r_value < 10:
-            return '%dR0' % int_r_value
-            sys.exit()
+        if float_r_value < 10:
+            # for x.y format
+            return '%sR%s' % (str_r_value[0], str_r_value[2])
+
         else:
-            str_r_value = str(int_r_value)
-            no_of_zero = floor(log10(int_r_value))
+            str_r_value = str(float_r_value)
+            no_of_zero = floor(log10(float_r_value))
             no_of_zero = int(no_of_zero)
 
             left_2_digit = str_r_value[0:2]
             last_digit = str(no_of_zero-1)
             return left_2_digit+last_digit
     except Exception as e:
-        pprint(int_r_value)
+        # pprint(float_r_value)
+        # pprint(float_r_value < 10)
+        pprint(type(str_r_value))
+        pprint('%sR%s' % (str_r_value[0], str_r_value[2]))
+        pass
 
 
 def getLibFile(three_digit_codes):
     text_content=[]
+
+    # int_r_value='6.2'
+    # r_three_digit_code = 'R'+getThreeDigitCode(int_r_value)
+    # pprint(r_three_digit_code)
+    # sys.exit()
+
+
     for three_digit_code in three_digit_codes:
-        int_r_value = parseTextCode(three_digit_code)
-        r_three_digit_code = 'R'+getThreeDigitCode(int_r_value)
-        text_content.append(R_LIB_UNIT_TEMPLATE.substitute(R_THREE_DIGIT_VALUE=r_three_digit_code))
+        try:
+            int_r_value = parseTextCode(three_digit_code)
+            r_three_digit_code = 'R'+getThreeDigitCode(int_r_value)
+            text_content.append(R_LIB_UNIT_TEMPLATE.substitute(R_THREE_DIGIT_VALUE=r_three_digit_code))
+            pass
+        except Exception as e:
+            pprint(int_r_value)
+            raise e
 
     text_to_write = R_LIB_TEMPLATE.substitute(
         R_CONTENT=''.join(text_content)
     )
+    text_to_write = text_to_write.replace('\n\n','\n')
 
     with open(LIB_FILE_PATH, 'w') as f:
         f.write(text_to_write)
