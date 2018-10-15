@@ -25,29 +25,31 @@ $C_CONTENT#
 #End Doc Library""")
 
 C_LIB_UNIT_TEMPLATE=Template("""#
-# $C_VALUE
+# $component_name
 #
-DEF $C_VALUE C 0 10 N N 1 F N
+DEF $component_name C 0 10 N N 1 F N
 F0 "C" 10 70 50 H V L CNN
-F1 "$C_VALUE" 10 -80 50 H V L CNN
+F1 "$component_name" 10 -80 50 H V L CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $$FPLIST
  CP_*
 $$ENDFPLIST
 DRAW
-P 2 0 1 20 -80 -30 80 -30 N
-P 2 0 1 20 -80 30 80 30 N
-X ~ 1 0 150 110 D 50 50 1 1 P
-X ~ 2 0 -150 110 U 50 50 1 1 P
+S -60 -12 60 -27 0 1 0 F
+S -60 27 60 12 0 1 0 N
+P 2 0 1 0 -50 60 -30 60 N
+P 2 0 1 0 -40 50 -40 70 N
+X ~ 1 0 100 73 D 50 50 1 1 P
+X ~ 2 0 -100 73 U 50 50 1 1 P
 ENDDRAW
 ENDDEF
 """)
 
 C_DCM_UNIT_TEMPLATE=Template("""#
-$$CMP $C_VALUE
+$$CMP $component_name
 D Polarized capacitor, small symbol
-K cap capacitor
+K cap capacitor 铝电解电容 https://item.taobao.com/item.htm?spm=2013.1.w9352644-16569462260.17.142c3ad2O7G3mW&id=522573454923
 F ~
 $$ENDCMP
 """)
@@ -86,7 +88,8 @@ def getLibFile(three_digit_codes):
     for three_digit_code, keyword in three_digit_codes:
         # int_r_value = parseTextCode(three_digit_code)
         # r_three_digit_code = 'R'+getThreeDigitCode(int_r_value)
-        text_content.append(C_LIB_UNIT_TEMPLATE.substitute(C_VALUE=three_digit_code))
+        cp_voltage, cp_size = keyword.split(',')
+        text_content.append(C_LIB_UNIT_TEMPLATE.substitute(component_name=','.join([three_digit_code, cp_voltage])))
 
     text_to_write = C_LIB_TEMPLATE.substitute(C_CONTENT=''.join(text_content)).strip()
 
@@ -99,7 +102,8 @@ def getDcmFile(three_digit_codes):
     for three_digit_code, keyword in three_digit_codes:
         # int_r_value = parseTextCode(three_digit_code)
         # r_three_digit_code = 'C'+getThreeDigitCode(int_r_value)
-        text_content.append(C_DCM_UNIT_TEMPLATE.substitute(C_VALUE=three_digit_code, C_KEYWORD=keyword))
+        cp_voltage, cp_size = keyword.split(',')
+        text_content.append(C_DCM_UNIT_TEMPLATE.substitute(component_name=','.join([three_digit_code, cp_voltage]), C_KEYWORD=keyword))
     c_content = ''.join(text_content)
 
     text_to_write = C_DCM_TEMPLATE.substitute(C_CONTENT = c_content)
@@ -120,7 +124,7 @@ def main():
 
             c_keyword = ','.join([cp_voltage, cp_size])
 
-            raw_values.append(('CP_'+cp_value,c_keyword))
+            raw_values.append(('CP'+cp_value,c_keyword))
 
         getLibFile(raw_values)
         getDcmFile(raw_values)

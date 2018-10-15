@@ -25,29 +25,31 @@ $C_CONTENT#
 #End Doc Library""")
 
 C_LIB_UNIT_TEMPLATE=Template("""#
-# $C_VALUE
+# $component_name
 #
-DEF $C_VALUE C 0 10 N N 1 F N
+DEF $component_name C 0 10 N N 1 F N
 F0 "C" 10 70 50 H V L CNN
-F1 "$C_VALUE" 10 -80 50 H V L CNN
+F1 "$component_name" 10 -80 50 H V L CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $$FPLIST
  CP_EIA*
 $$ENDFPLIST
 DRAW
-P 2 0 1 20 -80 -30 80 -30 N
-P 2 0 1 20 -80 30 80 30 N
-X ~ 1 0 150 110 D 50 50 1 1 P
-X ~ 2 0 -150 110 U 50 50 1 1 P
+S -60 -12 60 -27 0 1 0 F
+S -60 27 60 12 0 1 0 N
+P 2 0 1 0 -50 60 -30 60 N
+P 2 0 1 0 -40 50 -40 70 N
+X ~ 1 0 100 73 D 50 50 1 1 P
+X ~ 2 0 -100 73 U 50 50 1 1 P
 ENDDRAW
 ENDDEF
 """)
 
 C_DCM_UNIT_TEMPLATE=Template("""#
-$$CMP $C_VALUE
+$$CMP $component_name
 D Polarized capacitor, small symbol
-K cap capacitor
+K cap capacitor titanium_capacitor 鉭電容
 F ~
 $$ENDCMP
 """)
@@ -83,10 +85,10 @@ def getThreeDigitCode(int_r_value):
 
 def getLibFile(three_digit_codes):
     text_content=[]
-    for three_digit_code, keyword in three_digit_codes:
+    for v_value, c_value in three_digit_codes:
         # int_r_value = parseTextCode(three_digit_code)
         # r_three_digit_code = 'R'+getThreeDigitCode(int_r_value)
-        text_content.append(C_LIB_UNIT_TEMPLATE.substitute(C_VALUE=three_digit_code))
+        text_content.append(C_LIB_UNIT_TEMPLATE.substitute(component_name="%s,%s" %(v_value, c_value)))
 
     text_to_write = C_LIB_TEMPLATE.substitute(C_CONTENT=''.join(text_content)).strip()
     text_to_write = text_to_write.replace('\n\n','\n')
@@ -98,10 +100,11 @@ def getLibFile(three_digit_codes):
 
 def getDcmFile(three_digit_codes):
     text_content=[]
-    for three_digit_code, keyword in three_digit_codes:
+    for v_value, c_value in three_digit_codes:
         # int_r_value = parseTextCode(three_digit_code)
         # r_three_digit_code = 'C'+getThreeDigitCode(int_r_value)
-        text_content.append(C_DCM_UNIT_TEMPLATE.substitute(C_VALUE=three_digit_code, C_KEYWORD=keyword))
+        component_name = ','.join([c_value, v_value])
+        text_content.append(C_DCM_UNIT_TEMPLATE.substitute(component_name=component_name, C_KEYWORD=''))
     c_content = ''.join(text_content)
 
     text_to_write = C_DCM_TEMPLATE.substitute(C_CONTENT = c_content)
