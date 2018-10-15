@@ -33,7 +33,7 @@ F1 "$component_name" 10 -80 50 H V L CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $$FPLIST
- CP_*
+ CP_Elec*$C_SIZE
 $$ENDFPLIST
 DRAW
 S -60 -12 60 -27 0 1 0 F
@@ -49,10 +49,17 @@ ENDDEF
 C_DCM_UNIT_TEMPLATE=Template("""#
 $$CMP $component_name
 D Polarized capacitor, small symbol
-K cap capacitor 铝电解电容 https://item.taobao.com/item.htm?spm=2013.1.w9352644-16569462260.17.142c3ad2O7G3mW&id=522573454923
+K cap capacitor 铝电解电容 https://item.taobao.com/item.htm?spm=2013.1.0.0.372d47d1RDfViZ&id=571150150979
 F ~
 $$ENDCMP
 """)
+
+translate_size={
+    '6*7MM':'6.3x7.7',
+    '6*5MM':'6.3x5.2',
+    '5*5MM':'5x5.3',
+    '4*5MM':'4x5.3'
+}
 
 d_keyword_lookup = {}
 def readKeywordTable():
@@ -89,7 +96,8 @@ def getLibFile(three_digit_codes):
         # int_r_value = parseTextCode(three_digit_code)
         # r_three_digit_code = 'R'+getThreeDigitCode(int_r_value)
         cp_voltage, cp_size = keyword.split(',')
-        text_content.append(C_LIB_UNIT_TEMPLATE.substitute(component_name=','.join([three_digit_code, cp_voltage])))
+        c_size = translate_size[cp_size]+'*'
+        text_content.append(C_LIB_UNIT_TEMPLATE.substitute(component_name=','.join([three_digit_code, cp_voltage]),C_SIZE=c_size))
 
     text_to_write = C_LIB_TEMPLATE.substitute(C_CONTENT=''.join(text_content)).strip()
 

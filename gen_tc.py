@@ -33,7 +33,7 @@ F1 "$component_name" 10 -80 50 H V L CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $$FPLIST
- CP_EIA*
+ CP_EIA*$C_SIZE
 $$ENDFPLIST
 DRAW
 S -60 -12 60 -27 0 1 0 F
@@ -49,7 +49,7 @@ ENDDEF
 C_DCM_UNIT_TEMPLATE=Template("""#
 $$CMP $component_name
 D Polarized capacitor, small symbol
-K cap capacitor titanium_capacitor 鉭電容
+K cap capacitor titanium_capacitor 鉭電容 https://item.taobao.com/item.htm?spm=a230r.1.14.27.6ab534a2b5lRvu&id=552767914164&ns=1&abbucket=19#detail
 F ~
 $$ENDCMP
 """)
@@ -76,31 +76,31 @@ def parseTextCode(number_value):
 
     return int(number_value.replace('K','')) * factor
 
-def getThreeDigitCode(int_r_value):
-    str_r_value = str(int_r_value)
-    no_of_zero = floor(log10(int_r_value))
-    left_2_digit = str_r_value[0:2]
-    last_digit = str(no_of_zero-1)
-    return left_2_digit+last_digit
-
 def getLibFile(three_digit_codes):
     text_content=[]
-    for v_value, c_value in three_digit_codes:
+    for v_value, c_value, c_size in three_digit_codes:
         # int_r_value = parseTextCode(three_digit_code)
         # r_three_digit_code = 'R'+getThreeDigitCode(int_r_value)
-        text_content.append(C_LIB_UNIT_TEMPLATE.substitute(component_name="%s,%s" %(v_value, c_value)))
+        if c_size=='':
+            c_size=''
+        else:
+            c_size = c_size+'*'
+        cap_text = C_LIB_UNIT_TEMPLATE.substitute(component_name="%s,%s" %(v_value, c_value), C_SIZE=c_size)
+        text_content.append(cap_text)
 
-    text_to_write = C_LIB_TEMPLATE.substitute(C_CONTENT=''.join(text_content)).strip()
+    text_to_write = C_LIB_TEMPLATE.substitute(
+        C_CONTENT=''.join(text_content)
+        ).strip()
     text_to_write = text_to_write.replace('\n\n','\n')
 
-
+    pprint(text_to_write)
     with open(LIB_FILE_PATH, 'w') as f:
         f.write(text_to_write)
 
 
 def getDcmFile(three_digit_codes):
     text_content=[]
-    for v_value, c_value in three_digit_codes:
+    for v_value, c_value, c_size in three_digit_codes:
         # int_r_value = parseTextCode(three_digit_code)
         # r_three_digit_code = 'C'+getThreeDigitCode(int_r_value)
         component_name = ','.join([c_value, v_value])
@@ -129,11 +129,19 @@ def main():
                 #     p_value, n_value, u_value = d_keyword_lookup[test_line]['value']
                 #     c_keyword = ' ,'.join([p_value+'(p)', n_value+'(n)', u_value+'(u)'])
                 if len(test_line) > 0:
-                    v_value, c_value = test_line.split(',')
-                    raw_values.append(('TC'+c_value,v_value))
+                    # v_value, c_value = test_line.split(',')
+                    split_value = test_line.split(',')
+                    if len(split_value)==3:
+                        v_value, c_value, c_size = test_line.split(',')
+                    if len(split_value)==2:
+                        v_value, c_value = test_line.split(',')
+                        c_size = ''
+
+                    raw_values.append(('TC'+c_value,v_value, c_size))
                 pass
             except Exception as e:
                 pprint(test_line)
+                raise e
                 pass
 
 
