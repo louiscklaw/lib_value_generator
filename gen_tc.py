@@ -103,7 +103,7 @@ def getDcmFile(three_digit_codes):
     for v_value, c_value, c_size in three_digit_codes:
         # int_r_value = parseTextCode(three_digit_code)
         # r_three_digit_code = 'C'+getThreeDigitCode(int_r_value)
-        component_name = ','.join([c_value, v_value])
+        component_name = ','.join([v_value, c_value])
         text_content.append(C_DCM_UNIT_TEMPLATE.substitute(component_name=component_name, C_KEYWORD=''))
     c_content = ''.join(text_content)
 
