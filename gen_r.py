@@ -67,7 +67,10 @@ def parseTextCode(number_value):
     if number_value.find('K') == 3:
         factor = 1000
 
-    return float(number_value.replace('K','')) * factor
+    if number_value.find('M') == 2:
+        factor = 1000000
+
+    return float(number_value.replace('K','').replace('M','')) * factor
 
 def getThreeDigitCode(str_r_value):
     float_r_value = float(str_r_value)
@@ -82,6 +85,7 @@ def getThreeDigitCode(str_r_value):
         else:
             str_r_value = str(float_r_value)
             no_of_zero = floor(log10(float_r_value))
+
             no_of_zero = int(no_of_zero)
 
             left_2_digit = str_r_value[0:2]
@@ -106,10 +110,11 @@ def getLibFile(three_digit_codes):
 
     for three_digit_code in three_digit_codes:
         try:
+
             int_r_value = parseTextCode(three_digit_code)
             r_three_digit_code = 'R'+getThreeDigitCode(int_r_value)
             text_content.append(R_LIB_UNIT_TEMPLATE.substitute(R_THREE_DIGIT_VALUE=r_three_digit_code))
-            pass
+
         except Exception as e:
             pprint(int_r_value)
             raise e
