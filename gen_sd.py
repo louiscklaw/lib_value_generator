@@ -148,8 +148,6 @@ def main():
                 raise e
                 pass
 
-
-
         getLibFile(raw_values)
         getDcmFile(raw_values)
 
