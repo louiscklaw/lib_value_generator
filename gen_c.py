@@ -24,6 +24,12 @@ C_DCM_TEMPLATE=Template("""EESchema-DOCLIB  Version 2.0
 $C_CONTENT#
 #End Doc Library""")
 
+FP_TEMPLATE="""C_0805*
+ C_0603*
+ C_1206*
+ C_1210*
+"""
+
 C_LIB_UNIT_TEMPLATE=Template("""#
 # $C_VALUE
 #
@@ -33,11 +39,7 @@ F1 "$C_VALUE" 10 -80 50 H V L CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $$FPLIST
- C_0402*
- C_0805*
- C_0603*
- C_1206*
- C_1210*
+ $C_FOOTPRINT
 $$ENDFPLIST
 DRAW
 P 2 0 1 13 -60 -20 60 -20 N
@@ -87,10 +89,16 @@ def getThreeDigitCode(int_r_value):
 
 def getLibFile(three_digit_codes):
     text_content=[]
-    for three_digit_code, keyword in three_digit_codes:
+    for three_digit_code, keyword, cap_sizes,cap_voltage in three_digit_codes:
         # int_r_value = parseTextCode(three_digit_code)
         # r_three_digit_code = 'R'+getThreeDigitCode(int_r_value)
-        text_content.append(C_LIB_UNIT_TEMPLATE.substitute(C_VALUE=three_digit_code))
+        cap_footprint = FP_TEMPLATE
+        if len(cap_sizes) > 0:
+            cap_footprint = '\n'.join([ "C"+"*"+cap_size+"*"  for cap_size in cap_sizes.split('/')])
+        text_content.append(C_LIB_UNIT_TEMPLATE.substitute(
+            C_VALUE=three_digit_code,
+            C_FOOTPRINT=cap_footprint
+        ))
 
     text_to_write = C_LIB_TEMPLATE.substitute(C_CONTENT=''.join(text_content)).strip()
 
@@ -100,7 +108,7 @@ def getLibFile(three_digit_codes):
 
 def getDcmFile(three_digit_codes):
     text_content=[]
-    for three_digit_code, keyword in three_digit_codes:
+    for three_digit_code, keyword, cap_size,cap_voltage in three_digit_codes:
         # int_r_value = parseTextCode(three_digit_code)
         # r_three_digit_code = 'C'+getThreeDigitCode(int_r_value)
         text_content.append(C_DCM_UNIT_TEMPLATE.substitute(C_VALUE=three_digit_code, C_KEYWORD=keyword))
@@ -121,11 +129,21 @@ def main():
         for test_line in raw_lines:
             c_keyword = ''
             test_line = test_line.strip()
-            if test_line.find('(') > 0:
-                test_line = test_line.split('(')[1].replace(')','')
-                p_value, n_value, u_value = d_keyword_lookup[test_line]['value']
+
+            try:
+                cap_name, cap_size, cap_voltage = test_line.split(',')
+            except Exception as e:
+                print(test_line.split(','))
+                print(cap_size)
+
+            if cap_name.find('(') > 0:
+                cap_name = cap_name.split('(')[1].replace(')','')
+                p_value, n_value, u_value = d_keyword_lookup[cap_name]['value']
                 c_keyword = ' ,'.join([p_value+'(p)', n_value+'(n)', u_value+'(u)'])
-            raw_values.append(('C'+test_line.lower(),c_keyword))
+
+            cap_name = '-'.join([cap_name, cap_voltage]) if len(cap_voltage) > 0 else cap_name
+
+            raw_values.append(('C'+cap_name.lower(),c_keyword, cap_size, cap_voltage))
 
         getLibFile(raw_values)
         getDcmFile(raw_values)
