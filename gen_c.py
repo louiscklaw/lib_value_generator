@@ -48,10 +48,40 @@ ENDDRAW
 ENDDEF
 """)
 
+
+C_LIB_UNIT_SIZE_TEMPLATE=Template("""#
+# $C_VALUE_SIZE
+#
+DEF $C_VALUE_SIZE C 0 10 N N 1 F N
+F0 "C" 10 70 50 H V L CNN
+F1 "$C_VALUE_SIZE" 10 -80 50 H V L CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$$FPLIST
+ C_$C_SIZE*
+$$ENDFPLIST
+DRAW
+P 2 0 1 13 -60 -20 60 -20 N
+P 2 0 1 12 -60 20 60 20 N
+X ~ 1 0 100 80 D 50 50 1 1 P
+X ~ 2 0 -100 80 U 50 50 1 1 P
+ENDDRAW
+ENDDEF
+""")
+
+
 C_DCM_UNIT_TEMPLATE=Template("""#
 $$CMP $C_VALUE
 D Unpolarized capacitor, small symbol, $C_KEYWORD
 K capacitor cap $C_VALUE $C_KEYWORD
+F ~
+$$ENDCMP
+""")
+
+C_DCM_UNIT_SIZE_TEMPLATE=Template("""#
+$$CMP $C_VALUE_SIZE
+D Unpolarized capacitor, small symbol, $C_KEYWORD
+K capacitor cap $C_VALUE_SIZE $C_KEYWORD
 F ~
 $$ENDCMP
 """)
@@ -85,12 +115,18 @@ def getThreeDigitCode(int_r_value):
     last_digit = str(no_of_zero-1)
     return left_2_digit+last_digit
 
-def getLibFile(three_digit_codes):
+def getLibFile(c_settings):
     text_content=[]
-    for three_digit_code, keyword in three_digit_codes:
+    for three_digit_code, keyword, l_c_size in c_settings:
         # int_r_value = parseTextCode(three_digit_code)
         # r_three_digit_code = 'R'+getThreeDigitCode(int_r_value)
         text_content.append(C_LIB_UNIT_TEMPLATE.substitute(C_VALUE=three_digit_code))
+
+        for c_size in l_c_size:
+            text_content.append(C_LIB_UNIT_SIZE_TEMPLATE.substitute(
+                C_VALUE_SIZE = ','.join([three_digit_code, c_size]),
+                C_SIZE = c_size
+            ))
 
     text_to_write = C_LIB_TEMPLATE.substitute(C_CONTENT=''.join(text_content)).strip()
 
@@ -100,10 +136,14 @@ def getLibFile(three_digit_codes):
 
 def getDcmFile(three_digit_codes):
     text_content=[]
-    for three_digit_code, keyword in three_digit_codes:
+    for three_digit_code, keyword, l_c_size in three_digit_codes:
         # int_r_value = parseTextCode(three_digit_code)
         # r_three_digit_code = 'C'+getThreeDigitCode(int_r_value)
         text_content.append(C_DCM_UNIT_TEMPLATE.substitute(C_VALUE=three_digit_code, C_KEYWORD=keyword))
+
+        for c_size in l_c_size:
+            text_content.append(C_DCM_UNIT_SIZE_TEMPLATE.substitute(C_VALUE_SIZE=','.join([three_digit_code, c_size]),
+            C_KEYWORD=keyword))
     c_content = ''.join(text_content)
 
     text_to_write = C_DCM_TEMPLATE.substitute(C_CONTENT = c_content)
@@ -120,12 +160,19 @@ def main():
         raw_values = []
         for test_line in raw_lines:
             c_keyword = ''
+
             test_line = test_line.strip()
+            c_name = test_line.split('(')[0]
             if test_line.find('(') > 0:
-                test_line = test_line.split('(')[1].replace(')','')
-                p_value, n_value, u_value = d_keyword_lookup[test_line]['value']
+                text_to_lookup = test_line.split(',')[0]
+                text_to_lookup = text_to_lookup.split('(')[1].replace(')','')
+                p_value, n_value, u_value = d_keyword_lookup[text_to_lookup]['value']
                 c_keyword = ' ,'.join([p_value+'(p)', n_value+'(n)', u_value+'(u)'])
-            raw_values.append(('C'+test_line.lower(),c_keyword))
+
+            l_c_size = test_line.split(',')[1].split('/')
+
+
+            raw_values.append(('C'+c_name.lower(),c_keyword, l_c_size))
 
         getLibFile(raw_values)
         getDcmFile(raw_values)
