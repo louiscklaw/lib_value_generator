@@ -46,6 +46,35 @@ ENDDRAW
 ENDDEF
 """)
 
+R_LIB_UNIT_WITH_SIZE_TEMPLATE=Template("""#
+# $R_THREE_DIGIT_VALUE_SIZE
+#
+DEF $R_THREE_DIGIT_VALUE_SIZE R 0 10 N N 1 F N
+F0 "R" 30 20 50 H V L CNN
+F1 "$R_THREE_DIGIT_VALUE_SIZE" 30 -40 50 H V L CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$$FPLIST
+ Resistor_SMD:R_$R_SIZE*
+$$ENDFPLIST
+DRAW
+S -30 70 30 -70 0 1 8 N
+X ~ 1 0 100 30 D 50 50 1 1 P
+X ~ 2 0 -100 30 U 50 50 1 1 P
+ENDDRAW
+ENDDEF
+""")
+
+
+R_DCM_UNIT_WITH_SIZE_TEMPLATE=Template("""#
+$$CMP $R_THREE_DIGIT_VALUE_SIZE
+D Resistor
+K R r res resistor $R_THREE_DIGIT_VALUE_SIZE $R_TEXT_VALUE
+F ~
+$$ENDCMP
+""")
+
+
 R_DCM_UNIT_TEMPLATE=Template("""#
 $$CMP $R_THREE_DIGIT_VALUE
 D Resistor
@@ -53,6 +82,9 @@ K R r res resistor $R_THREE_DIGIT_VALUE $R_TEXT_VALUE
 F ~
 $$ENDCMP
 """)
+
+
+
 
 def parseTextCode(number_value):
     factor = 1
@@ -99,7 +131,7 @@ def getThreeDigitCode(str_r_value):
         pass
 
 
-def getLibFile(three_digit_codes):
+def getLibFile(r_settings):
     text_content=[]
 
     # int_r_value='6.2'
@@ -108,12 +140,17 @@ def getLibFile(three_digit_codes):
     # sys.exit()
 
 
-    for three_digit_code in three_digit_codes:
+    for r_name, l_r_size in r_settings:
         try:
+            int_r_value = parseTextCode(r_name)
+            R_r_name = 'R'+getThreeDigitCode(int_r_value)
+            text_content.append(R_LIB_UNIT_TEMPLATE.substitute(R_THREE_DIGIT_VALUE=R_r_name))
 
-            int_r_value = parseTextCode(three_digit_code)
-            r_three_digit_code = 'R'+getThreeDigitCode(int_r_value)
-            text_content.append(R_LIB_UNIT_TEMPLATE.substitute(R_THREE_DIGIT_VALUE=r_three_digit_code))
+            for r_size in l_r_size:
+                text_content.append(R_LIB_UNIT_WITH_SIZE_TEMPLATE.substitute(
+                    R_THREE_DIGIT_VALUE_SIZE=','.join([R_r_name, r_size]),
+                    R_SIZE=r_size
+                ))
 
         except Exception as e:
             pprint(int_r_value)
@@ -128,13 +165,17 @@ def getLibFile(three_digit_codes):
         f.write(text_to_write)
 
 
-def getDcmFile(three_digit_codes):
+def getDcmFile(r_settings):
     text_content=[]
-    for three_digit_code in three_digit_codes:
-        int_r_value = parseTextCode(three_digit_code)
-        r_three_digit_code = 'R'+getThreeDigitCode(int_r_value)
-        text_content.append(R_DCM_UNIT_TEMPLATE.substitute(R_THREE_DIGIT_VALUE=r_three_digit_code,
-        R_TEXT_VALUE=three_digit_code))
+    for r_name, l_r_size in r_settings:
+        int_r_value = parseTextCode(r_name)
+        R_r_name = 'R'+getThreeDigitCode(int_r_value)
+        text_content.append(R_DCM_UNIT_TEMPLATE.substitute(R_THREE_DIGIT_VALUE=R_r_name,
+        R_TEXT_VALUE=r_name))
+
+        for r_size in l_r_size:
+            text_content.append(R_DCM_UNIT_TEMPLATE.substitute(R_THREE_DIGIT_VALUE=','.join([R_r_name,r_size]),
+            R_TEXT_VALUE=r_name))
 
     text_to_write = R_DCM_TEMPLATE.substitute(
         R_CONTENT = ''.join(text_content)
@@ -151,7 +192,10 @@ def main():
         raw_values = []
         for test_line in raw_lines:
             test_line = test_line.strip()
-            raw_values.append(test_line)
+            r_name = test_line.split(',')[0]
+            l_r_size = test_line.split(',')[1].split('/')
+
+            raw_values.append([r_name, l_r_size])
 
         getLibFile(raw_values)
         getDcmFile(raw_values)
