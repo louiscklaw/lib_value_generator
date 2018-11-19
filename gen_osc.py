@@ -33,7 +33,7 @@ F1 "$O_VALUE" 0 -100 50 H V C CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $$FPLIST
- Crystal*
+ $OSC_FOOTPRINT
 $$ENDFPLIST
 DRAW
 S -30 -60 30 60 0 1 0 N
@@ -84,10 +84,13 @@ def getThreeDigitCode(int_r_value):
 
 def getLibFile(three_digit_codes):
     text_content=[]
-    for three_digit_code, keyword in three_digit_codes:
+    for three_digit_code, osc_footprint in three_digit_codes:
         # int_r_value = parseTextCode(three_digit_code)
         # r_three_digit_code = 'R'+getThreeDigitCode(int_r_value)
-        text_content.append(C_LIB_UNIT_TEMPLATE.substitute(O_VALUE=three_digit_code))
+        text_content.append(C_LIB_UNIT_TEMPLATE.substitute(
+            O_VALUE=three_digit_code,
+            OSC_FOOTPRINT='*%s*' % osc_footprint
+            ))
 
     text_to_write = C_LIB_TEMPLATE.substitute(O_CONTENT=''.join(text_content))
     text_to_write = text_to_write.replace('\n\n','\n')
@@ -117,11 +120,13 @@ def main():
         for test_line in raw_lines:
             c_keyword = ''
             test_line = test_line.strip()
-            if test_line.find('(') > 0:
-                test_line = test_line.split('(')[1].replace(')','')
-                p_value, n_value, u_value = d_keyword_lookup[test_line]['value']
-                c_keyword = ' ,'.join([p_value+'(p)', n_value+'(n)', u_value+'(u)'])
-            raw_values.append(('O'+test_line,c_keyword))
+            # if test_line.find('(') > 0:
+            #     test_line = test_line.split('(')[1].replace(')','')
+            #     p_value, n_value, u_value = d_keyword_lookup[test_line]['value']
+            #     c_keyword = ' ,'.join([p_value+'(p)', n_value+'(n)', u_value+'(u)'])
+
+            osc_value, osc_footprint = test_line.split(',')
+            raw_values.append(('O'+osc_value,osc_footprint))
 
         getLibFile(raw_values)
         getDcmFile(raw_values)
