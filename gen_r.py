@@ -31,7 +31,7 @@ R_LIB_UNIT_TEMPLATE=Template("""#
 DEF $R_THREE_DIGIT_VALUE R 0 10 N N 1 F N
 F0 "R" 30 20 50 H V L CNN
 F1 "$R_THREE_DIGIT_VALUE" 30 -40 50 H V L CNN
-F2 "" 0 0 50 H I C CNN
+F2 "$d_footprint" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $$FPLIST
  R_*
@@ -52,7 +52,7 @@ R_LIB_UNIT_WITH_SIZE_TEMPLATE=Template("""#
 DEF $R_THREE_DIGIT_VALUE_SIZE R 0 10 N N 1 F N
 F0 "R" 30 20 50 H V L CNN
 F1 "$R_THREE_DIGIT_VALUE_SIZE" 30 -40 50 H V L CNN
-F2 "" 0 0 50 H I C CNN
+F2 "$d_footprint" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $$FPLIST
  Resistor_SMD:R_$R_SIZE*
@@ -83,7 +83,10 @@ F ~
 $$ENDCMP
 """)
 
-
+fp_default_fp_matcher={
+    '0603': 'Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder',
+    '0402':'Resistor_SMD:R_0402_1005Metric',
+}
 
 
 def parseTextCode(number_value):
@@ -144,12 +147,16 @@ def getLibFile(r_settings):
         try:
             int_r_value = parseTextCode(r_name)
             R_r_name = 'R'+getThreeDigitCode(int_r_value)
-            text_content.append(R_LIB_UNIT_TEMPLATE.substitute(R_THREE_DIGIT_VALUE=R_r_name))
+            text_content.append(R_LIB_UNIT_TEMPLATE.substitute(R_THREE_DIGIT_VALUE=R_r_name,
+            # default symbol done deserve a default footprint (no size specified)
+            d_footprint=''
+            ))
 
             for r_size in l_r_size:
                 text_content.append(R_LIB_UNIT_WITH_SIZE_TEMPLATE.substitute(
                     R_THREE_DIGIT_VALUE_SIZE=','.join([R_r_name, r_size]),
-                    R_SIZE=r_size
+                    R_SIZE=r_size,
+                    d_footprint=fp_default_fp_matcher[r_size]
                 ))
 
         except Exception as e:
@@ -192,8 +199,11 @@ def main():
         raw_values = []
         for test_line in raw_lines:
             test_line = test_line.strip()
-            r_name = test_line.split(',')[0]
-            l_r_size = test_line.split(',')[1].split('/')
+            test_line_split = test_line.split(',')
+
+            r_name = test_line_split[0]
+            l_r_size = test_line_split[1].split('/')
+            default_footprint = test_line_split[2]
 
             raw_values.append([r_name, l_r_size])
 
