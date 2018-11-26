@@ -61,8 +61,8 @@ ENDDEF
 
 ZD_DCM_UNIT_TEMPLATE=Template("""#
 $$CMP $component_name
-D Schottky diode, small symbol, 肖特基二极管 ,
-K diode
+D $SD_DESCRIPTION, Schottky diode, small symbol, 肖特基二极管 ,
+K $SD_KEYWORD diode
 F ~
 $$ENDCMP
 """)
@@ -93,33 +93,48 @@ def parseTextCode(number_value):
     return int(number_value.replace('K','')) * factor
 
 def getLibFile(components):
-    zd_units=[]
-    for zd_lib_name,zd_name, zd_sizes in components:
-        zd_size_texts = (ZENER_DIODE_SIZE_TEMPLATE.substitute(SIZE=zd_size) for zd_size in zd_sizes)
-        zd_size_texts = '\n '.join(zd_size_texts)
-        # get the origional name and the screen name
-        zd_name_origional = zd_name.split('_')[0]
-        zd_name_screen = zd_name.split('_')[1]
+    try:
+        zd_units=[]
+        for zd_lib_name, zd_name, zd_footprint, zd_description, zd_keyword in components:
 
-        zd_units.append(ZD_LIB_UNIT_TEMPLATE.substitute(
-            component_name= zd_lib_name,
-            FP_TEXT=zd_size_texts,
-            DRAW_TEXT=COMPONENT_DRAW_TEXT,
-            F_TEXT = COMPONENT_F_TEXT.substitute(component_name=zd_lib_name),
-            ALIAS_TEXT=COMPONENT_ALIAS_TEXT.substitute(ALIAS=' '.join([zd_name_origional,zd_name_screen ]))
-            ))
+            zd_size_texts = (ZENER_DIODE_SIZE_TEMPLATE.substitute(SIZE=zd_size) for zd_size in zd_footprint.split('/'))
+            zd_size_texts = '\n '.join(zd_size_texts)
 
-    zd_lib = LIB_TEMPLATE.substitute(LIB_CONTENT=''.join(zd_units))
-    zd_lib = zd_lib.replace('\n\n','\n')
+            # get the original name and the screen name
+            zd_name_screen = zd_name
+            zd_name_original = ''
+            if zd_name.find('_') > -1:
+                zd_name_original = zd_name.split('_')[0]
+                zd_name_screen = zd_name.split('_')[1]
 
-    with open(LIB_FILE_PATH,'w') as f:
-        f.write(zd_lib)
+            zd_units.append(ZD_LIB_UNIT_TEMPLATE.substitute(
+                component_name= zd_lib_name,
+                FP_TEXT=zd_size_texts,
+                DRAW_TEXT=COMPONENT_DRAW_TEXT,
+                F_TEXT = COMPONENT_F_TEXT.substitute(component_name=zd_lib_name),
+                ALIAS_TEXT=COMPONENT_ALIAS_TEXT.substitute(ALIAS=' '.join([zd_name_original, zd_name_screen ]))
+                ))
+
+        zd_lib = LIB_TEMPLATE.substitute(LIB_CONTENT=''.join(zd_units))
+        zd_lib = zd_lib.replace('\n\n','\n')
+
+        with open(LIB_FILE_PATH,'w') as f:
+            f.write(zd_lib)
+        pass
+    except Exception as e:
+        print(zd_name)
+        raise e
+
 
 def getDcmFile(components):
     text_content=[]
-    for zd_lib_name, zd_name,zd_sizes in components:
+    for zd_lib_name, zd_name, zd_footprint, zd_description, zd_keyword in components:
 
-        text_content.append(ZD_DCM_UNIT_TEMPLATE.substitute(component_name=zd_lib_name))
+        text_content.append(ZD_DCM_UNIT_TEMPLATE.substitute(
+            component_name=zd_lib_name,
+            SD_DESCRIPTION = zd_description.replace('_',', '),
+            SD_KEYWORD = zd_keyword.replace('_',' ')
+            ))
 
     zd_content = ''.join(text_content)
 
@@ -140,9 +155,11 @@ def main():
                 test_line = test_line.strip()
                 splitted = test_line.split(',')
                 zd_name = splitted[0]
-                zd_size = splitted[1:]
+                zd_footprint = splitted[1]
+                zd_description = splitted[2]
+                zd_keyword = splitted[3]
 
-                raw_values.append(('SD_'+zd_name,zd_name, zd_size))
+                raw_values.append(('SD_'+zd_name,zd_name, zd_footprint, zd_description, zd_keyword))
             except Exception as e:
                 pprint(test_line)
                 raise e
