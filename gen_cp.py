@@ -30,7 +30,7 @@ C_LIB_UNIT_TEMPLATE=Template("""#
 DEF $component_name C 0 10 N N 1 F N
 F0 "C" 10 70 50 H V L CNN
 F1 "$component_name" 10 -80 50 H V L CNN
-F2 "" 0 0 50 H I C CNN
+F2 "$DEFAULT_FOOTPRINT" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $$FPLIST
  CP_Elec*$C_SIZE
@@ -56,10 +56,10 @@ $$ENDCMP
 
 translate_size={
     '6*7MM':'6.3x7.7',
-    '6*5MM':'6.3x5.2',
+    '6*5MM':'6.3x5.3',
     '5*5MM':'5x5.3',
     '4*5MM':'4x5.3',
-    '10.5*10MM':'10x10.5'
+    '10*10.5MM':'10x10.5'
 }
 
 d_keyword_lookup = {}
@@ -93,12 +93,14 @@ def getThreeDigitCode(int_r_value):
 
 def getLibFile(three_digit_codes):
     text_content=[]
-    for three_digit_code, keyword in three_digit_codes:
+    for three_digit_code, keyword, cp_default_footprint in three_digit_codes:
         # int_r_value = parseTextCode(three_digit_code)
         # r_three_digit_code = 'R'+getThreeDigitCode(int_r_value)
         cp_voltage, cp_size = keyword.split(',')
         c_size = translate_size[cp_size]+'*'
-        text_content.append(C_LIB_UNIT_TEMPLATE.substitute(component_name=','.join([three_digit_code, cp_voltage]),C_SIZE=c_size))
+        text_content.append(C_LIB_UNIT_TEMPLATE.substitute(component_name=','.join([three_digit_code, cp_voltage]),C_SIZE=c_size,
+        DEFAULT_FOOTPRINT=cp_default_footprint
+        ))
 
     text_to_write = C_LIB_TEMPLATE.substitute(C_CONTENT=''.join(text_content)).strip()
 
@@ -108,7 +110,7 @@ def getLibFile(three_digit_codes):
 
 def getDcmFile(three_digit_codes):
     text_content=[]
-    for three_digit_code, keyword in three_digit_codes:
+    for three_digit_code, keyword, cp_default_footprint in three_digit_codes:
         # int_r_value = parseTextCode(three_digit_code)
         # r_three_digit_code = 'C'+getThreeDigitCode(int_r_value)
         cp_voltage, cp_size = keyword.split(',')
@@ -129,11 +131,11 @@ def main():
         for test_line in raw_lines:
             c_keyword = ''
             test_line = test_line.strip()
-            cp_value, cp_voltage, cp_size = test_line.split(',')
+            cp_value, cp_voltage, cp_footprint, cp_default_footprint = test_line.split(',')
 
-            c_keyword = ','.join([cp_voltage, cp_size])
+            c_keyword = ','.join([cp_voltage, cp_footprint])
 
-            raw_values.append(('CP'+cp_value,c_keyword))
+            raw_values.append(('CP'+cp_value,c_keyword, cp_default_footprint))
 
         getLibFile(raw_values)
         getDcmFile(raw_values)
