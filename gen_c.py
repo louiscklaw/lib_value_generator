@@ -193,7 +193,7 @@ def main():
                 p_value, n_value, u_value = d_keyword_lookup[cap_name]['value']
                 c_keyword = ' ,'.join([p_value+'(p)', n_value+'(n)', u_value+'(u)'])
 
-            cap_name = '-'.join([cap_name, cap_voltage]) if len(cap_voltage) > 0 else cap_name
+            cap_name = ','.join([cap_name, cap_voltage]) if len(cap_voltage) > 0 else cap_name
 
             raw_values.append(('C'+cap_name.lower(),c_keyword, cap_size, cap_voltage))
 
