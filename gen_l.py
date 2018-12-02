@@ -91,7 +91,7 @@ L_DEFAULT_SIZE_LOOKUP={
     "0805":'Inductor_SMD:L_0805_2012Metric_Pad1.15x1.40mm_HandSolder',
     '0603':'Inductor_SMD:L_0603_1608Metric_Pad1.05x0.95mm_HandSolder',
     '0402':'Inductor_SMD:L_0402_1005Metric',
-    'CD43':'Inductor_SMD:*CD43*',
+    'CD43':'w_smd_inductors:inductor_smd_4.8x2.8mm',
 }
 
 d_keyword_lookup = {}
