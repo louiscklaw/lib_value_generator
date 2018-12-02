@@ -136,7 +136,6 @@ def getLibFile(c_settings):
             C_VALUE=three_digit_code,
             C_FOOTPRINT=cap_footprint_filter
         ))
-        print(cap_sizes)
 
         for cap_size in cap_sizes.split('/'):
             text_content.append(C_LIB_UNIT_SIZE_TEMPLATE.substitute(
@@ -144,7 +143,7 @@ def getLibFile(c_settings):
                 C_SIZE = cap_size,
                 C_DEFAULT_FOOTPRINT= DEFAULT_FOOTPRINT_LOOKUP[cap_size] if cap_size in DEFAULT_FOOTPRINT_LOOKUP.keys() else ''
             ))
-            print(cap_size)
+            print(three_digit_code," ", cap_size)
 
     text_to_write = C_LIB_TEMPLATE.substitute(C_CONTENT=''.join(text_content)).strip()
 
@@ -180,6 +179,7 @@ def main():
             c_keyword = ''
 
             test_line = test_line.strip()
+            print(test_line)
 
             try:
                 cap_name, cap_size, cap_voltage = test_line.split(',')
@@ -187,6 +187,7 @@ def main():
                 print('error during splitting value')
                 print(test_line.split(','))
                 print(cap_size)
+                sys.exit()
 
             if cap_name.find('(') > 0:
                 cap_name = cap_name.split('(')[1].replace(')','')
