@@ -57,7 +57,7 @@ C_LIB_UNIT_SIZE_TEMPLATE=Template("""#
 DEF $C_VALUE_SIZE C 0 10 N N 1 F N
 F0 "C" 10 70 50 H V L CNN
 F1 "$C_VALUE_SIZE" 10 -80 50 H V L CNN
-F2 "" 0 0 50 H I C CNN
+F2 "$C_DEFAULT_FOOTPRINT" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $$FPLIST
  C_$C_SIZE*
@@ -87,6 +87,13 @@ K capacitor cap $C_VALUE_SIZE $C_KEYWORD
 F ~
 $$ENDCMP
 """)
+
+DEFAULT_FOOTPRINT_LOOKUP={
+    "0603":"Capacitor_SMD:C_0603_1608Metric_Pad1.05x0.95mm_HandSolder",
+    "0805":"Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder",
+    "0402":"Capacitor_SMD:C_0402_1005Metric",
+    "1206":"Capacitor_SMD:C_1206_3216Metric_Pad1.42x1.75mm_HandSolder",
+}
 
 d_keyword_lookup = {}
 def readKeywordTable():
@@ -122,19 +129,21 @@ def getLibFile(c_settings):
     for three_digit_code, keyword, cap_sizes,cap_voltage in c_settings:
         # int_r_value = parseTextCode(three_digit_code)
         # r_three_digit_code = 'R'+getThreeDigitCode(int_r_value)
-        cap_footprint = FP_TEMPLATE
+        cap_footprint_filter = FP_TEMPLATE
         if len(cap_sizes) > 0:
-            cap_footprint = '\n'.join([ "C"+"*"+cap_size+"*"  for cap_size in cap_sizes.split('/')])
+            cap_footprint_filter = '\n'.join([ "C"+"*"+cap_size+"*"  for cap_size in cap_sizes.split('/')])
         text_content.append(C_LIB_UNIT_TEMPLATE.substitute(
             C_VALUE=three_digit_code,
-            C_FOOTPRINT=cap_footprint
+            C_FOOTPRINT=cap_footprint_filter
         ))
 
         for cap_size in cap_sizes.split('/'):
             text_content.append(C_LIB_UNIT_SIZE_TEMPLATE.substitute(
                 C_VALUE_SIZE = ','.join([three_digit_code, cap_size]),
-                C_SIZE = cap_size
+                C_SIZE = cap_size,
+                C_DEFAULT_FOOTPRINT= DEFAULT_FOOTPRINT_LOOKUP[cap_size] if cap_size in DEFAULT_FOOTPRINT_LOOKUP.keys() else ''
             ))
+            print(three_digit_code," ", cap_size)
 
     text_to_write = C_LIB_TEMPLATE.substitute(C_CONTENT=''.join(text_content)).strip()
 
@@ -170,6 +179,7 @@ def main():
             c_keyword = ''
 
             test_line = test_line.strip()
+            print(test_line)
 
             try:
                 cap_name, cap_size, cap_voltage = test_line.split(',')
@@ -177,13 +187,14 @@ def main():
                 print('error during splitting value')
                 print(test_line.split(','))
                 print(cap_size)
+                sys.exit()
 
             if cap_name.find('(') > 0:
                 cap_name = cap_name.split('(')[1].replace(')','')
                 p_value, n_value, u_value = d_keyword_lookup[cap_name]['value']
                 c_keyword = ' ,'.join([p_value+'(p)', n_value+'(n)', u_value+'(u)'])
 
-            cap_name = '-'.join([cap_name, cap_voltage]) if len(cap_voltage) > 0 else cap_name
+            cap_name = ','.join([cap_name, cap_voltage]) if len(cap_voltage) > 0 else cap_name
 
             raw_values.append(('C'+cap_name.lower(),c_keyword, cap_size, cap_voltage))
 
