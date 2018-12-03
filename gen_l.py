@@ -32,7 +32,7 @@ FP_TEMPLATE=""" Choke_*
  L_*
 """
 
-
+# without default footprint
 L_LIB_UNIT_TEMPLATE=Template("""#
 # $L_VALUE
 #
@@ -55,7 +55,7 @@ ENDDRAW
 ENDDEF
 """)
 
-
+# with default footprint
 L_LIB_UNIT_SIZE_TEMPLATE=Template("""#
 # $L_VALUE
 #
@@ -87,6 +87,7 @@ $$ENDCMP
 """)
 
 L_DEFAULT_SIZE_LOOKUP={
+    "1210":'Inductor_SMD:L_1210_3225Metric_Pad1.42x2.65mm_HandSolder',
     "1206":'Inductor_SMD:L_1206_3216Metric_Pad1.42x1.75mm_HandSolder',
     "0805":'Inductor_SMD:L_0805_2012Metric_Pad1.15x1.40mm_HandSolder',
     '0603':'Inductor_SMD:L_0603_1608Metric_Pad1.05x0.95mm_HandSolder',

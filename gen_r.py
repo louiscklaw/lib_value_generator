@@ -84,8 +84,11 @@ $$ENDCMP
 """)
 
 fp_default_fp_matcher={
+    '1206':'Resistor_SMD:R_1206_3216Metric_Pad1.42x1.75mm_HandSolder',
+    '0805':'0805',
     '0603': 'Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder',
     '0402':'Resistor_SMD:R_0402_1005Metric',
+
 }
 
 
@@ -198,6 +201,7 @@ def main():
         raw_lines = f.readlines()
         raw_values = []
         for test_line in raw_lines:
+<<<<<<< Updated upstream
             test_line = test_line.strip()
             test_line_split = test_line.split(',')
 
@@ -206,6 +210,21 @@ def main():
             default_footprint = test_line_split[2]
 
             raw_values.append([r_name, l_r_size])
+=======
+            try:
+                test_line = test_line.strip()
+                test_line_split = test_line.split(',')
+
+                r_name = test_line_split[0]
+                l_r_size = test_line_split[1].split('/')
+                # default_footprint = test_line_split[2]
+
+                raw_values.append([r_name, l_r_size])
+                pass
+            except Exception as e:
+                pprint(test_line)
+                pass
+>>>>>>> Stashed changes
 
         getLibFile(raw_values)
         getDcmFile(raw_values)
