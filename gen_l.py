@@ -183,8 +183,10 @@ def main():
                 print(induct_name)
                 raise e
 
-            raw_values.append((','.join([induct_name, induct_current]),induct_size))
-
+            if induct_current != '':
+                raw_values.append((','.join([induct_name, induct_current]),induct_size))
+            else:
+                raw_values.append((induct_name, induct_size))
         getLibFile(raw_values)
         getDcmFile(raw_values)
 
