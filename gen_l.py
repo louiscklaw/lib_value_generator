@@ -93,6 +93,7 @@ L_DEFAULT_SIZE_LOOKUP={
     '0603':'Inductor_SMD:L_0603_1608Metric_Pad1.05x0.95mm_HandSolder',
     '0402':'Inductor_SMD:L_0402_1005Metric',
     'CD43':'w_smd_inductors:inductor_smd_4.8x2.8mm',
+    '1040':'Inductor_SMD:L_Wuerth_HCI-1040'
 }
 
 d_keyword_lookup = {}
@@ -124,12 +125,11 @@ def getThreeDigitCode(int_r_value):
     last_digit = str(no_of_zero-1)
     return left_2_digit+last_digit
 
-def getLibFile(three_digit_codes):
+def getLibFile(raw_values):
     text_content=[]
-    for induct_name, induct_sizes in three_digit_codes:
-        # int_r_value = parseTextCode(three_digit_code)
-        # r_three_digit_code = 'R'+getThreeDigitCode(int_r_value)
 
+    for raw_value in raw_values:
+        induct_name, induct_sizes = raw_value
         induct_footprint = FP_TEMPLATE
         if len(induct_sizes) > 0:
             induct_footprint = '\n'.join([ "L*"+induct_size+"*"  for induct_size in induct_sizes.split('/')])
@@ -146,8 +146,6 @@ def getLibFile(three_digit_codes):
                 L_FOOTPRINT="L*"+induct_size+"*",
                 L_DEFAULT_FOOTPRINT=L_DEFAULT_SIZE_LOOKUP[induct_size] if induct_size in L_DEFAULT_SIZE_LOOKUP.keys() else ''
             ))
-        print(induct_sizes)
-
     text_to_write = L_LIB_TEMPLATE.substitute(L_CONTENT=''.join(text_content)).strip()
 
     with open(LIB_FILE_PATH, 'w') as f:
@@ -179,12 +177,13 @@ def main():
             test_line = test_line.strip()
 
             try:
-                induct_name, induct_size = test_line.split(',')
+                induct_name, induct_size, induct_current, induct_description = test_line.split(',')
             except Exception as e:
                 print(test_line.split(','))
-                print(cap_size)
+                print(induct_name)
+                raise e
 
-            raw_values.append((induct_name,induct_size))
+            raw_values.append((','.join([induct_name, induct_current]),induct_size))
 
         getLibFile(raw_values)
         getDcmFile(raw_values)
