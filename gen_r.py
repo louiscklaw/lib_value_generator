@@ -201,16 +201,6 @@ def main():
         raw_lines = f.readlines()
         raw_values = []
         for test_line in raw_lines:
-<<<<<<< Updated upstream
-            test_line = test_line.strip()
-            test_line_split = test_line.split(',')
-
-            r_name = test_line_split[0]
-            l_r_size = test_line_split[1].split('/')
-            default_footprint = test_line_split[2]
-
-            raw_values.append([r_name, l_r_size])
-=======
             try:
                 test_line = test_line.strip()
                 test_line_split = test_line.split(',')
@@ -224,7 +214,6 @@ def main():
             except Exception as e:
                 pprint(test_line)
                 pass
->>>>>>> Stashed changes
 
         getLibFile(raw_values)
         getDcmFile(raw_values)
