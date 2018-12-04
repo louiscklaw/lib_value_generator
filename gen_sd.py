@@ -10,6 +10,8 @@ from math import log10, floor
 from string import Template
 import csv
 
+GOOGLE_SEARCH_LINK_TEMPLATE='https://www.google.com/search?q=%s+datasheet'
+
 INPUT_TABLE='sd_value_list.csv'
 LIB_FILE_PATH='/home/logic/_workspace/kicad/kicad_library/kicad-symbols/taobao-sd.lib'
 DCM_FILE_PATH=LIB_FILE_PATH.replace('.lib','.dcm')
