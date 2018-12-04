@@ -54,14 +54,6 @@ F ~
 $$ENDCMP
 """)
 
-translate_size={
-    '6*7MM':'6.3x7.7',
-    '6*5MM':'6.3x5.3',
-    '5*5MM':'5x5.3',
-    '4*5MM':'4x5.3',
-    '10*10.5MM':'10x10.5'
-}
-
 d_keyword_lookup = {}
 def readKeywordTable():
     for row in csv.reader(open('./c_code_mapping_table.csv','r').readlines()):
@@ -97,7 +89,7 @@ def getLibFile(three_digit_codes):
         # int_r_value = parseTextCode(three_digit_code)
         # r_three_digit_code = 'R'+getThreeDigitCode(int_r_value)
         cp_voltage, cp_size = keyword.split(',')
-        c_size = translate_size[cp_size]+'*'
+        c_size = "*"+cp_size+'*'
         text_content.append(C_LIB_UNIT_TEMPLATE.substitute(component_name=','.join([three_digit_code, cp_voltage]),C_SIZE=c_size,
         DEFAULT_FOOTPRINT=cp_default_footprint
         ))
@@ -131,7 +123,9 @@ def main():
         for test_line in raw_lines:
             c_keyword = ''
             test_line = test_line.strip()
-            cp_value, cp_voltage, cp_footprint, cp_default_footprint = test_line.split(',')
+            cp_value, cp_voltage, cp_footprint = test_line.split(',')
+
+            cp_default_footprint = "Capacitor_SMD:CP_Elec_"+cp_footprint
 
             c_keyword = ','.join([cp_voltage, cp_footprint])
 
