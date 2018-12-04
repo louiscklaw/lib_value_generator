@@ -32,6 +32,7 @@ FP_TEMPLATE=""" Choke_*
  L_*
 """
 
+
 L_LIB_UNIT_TEMPLATE=Template("""#
 # $L_VALUE
 #
@@ -54,6 +55,29 @@ ENDDRAW
 ENDDEF
 """)
 
+
+L_LIB_UNIT_SIZE_TEMPLATE=Template("""#
+# $L_VALUE
+#
+DEF $L_VALUE L 0 10 N N 1 F N
+F0 "L" 30 40 50 H V L CNN
+F1 "$L_VALUE" 30 -40 50 H V L CNN
+F2 "$L_DEFAULT_FOOTPRINT" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$$FPLIST
+ $L_FOOTPRINT
+$$ENDFPLIST
+DRAW
+A 0 -60 20 -899 899 0 1 0 N 0 -80 0 -40
+A 0 -20 20 -899 899 0 1 0 N 0 -40 0 0
+A 0 20 20 -899 899 0 1 0 N 0 0 0 40
+A 0 60 20 -899 899 0 1 0 N 0 40 0 80
+X ~ 1 0 100 20 D 50 50 1 1 P
+X ~ 2 0 -100 20 U 50 50 1 1 P
+ENDDRAW
+ENDDEF
+""")
+
 L_DCM_UNIT_TEMPLATE=Template("""#
 $$CMP $L_VALUE
 D Inductor, small symbol
@@ -61,6 +85,14 @@ K inductor choke coil reactor magnetic
 F ~
 $$ENDCMP
 """)
+
+L_DEFAULT_SIZE_LOOKUP={
+    "1206":'Inductor_SMD:L_1206_3216Metric_Pad1.42x1.75mm_HandSolder',
+    "0805":'Inductor_SMD:L_0805_2012Metric_Pad1.15x1.40mm_HandSolder',
+    '0603':'Inductor_SMD:L_0603_1608Metric_Pad1.05x0.95mm_HandSolder',
+    '0402':'Inductor_SMD:L_0402_1005Metric',
+    'CD43':'w_smd_inductors:inductor_smd_4.8x2.8mm',
+}
 
 d_keyword_lookup = {}
 def readKeywordTable():
@@ -96,13 +128,24 @@ def getLibFile(three_digit_codes):
     for induct_name, induct_sizes in three_digit_codes:
         # int_r_value = parseTextCode(three_digit_code)
         # r_three_digit_code = 'R'+getThreeDigitCode(int_r_value)
+
         induct_footprint = FP_TEMPLATE
         if len(induct_sizes) > 0:
-            induct_footprint = '\n'.join([ "*"+induct_size+"*"  for induct_size in induct_sizes.split('/')])
-        text_content.append(L_LIB_UNIT_TEMPLATE.substitute(
-            L_VALUE=induct_name,
-            L_FOOTPRINT=induct_footprint
-        ))
+            induct_footprint = '\n'.join([ "L*"+induct_size+"*"  for induct_size in induct_sizes.split('/')])
+
+            text_content.append(L_LIB_UNIT_SIZE_TEMPLATE.substitute(
+                L_VALUE=','.join([induct_name]),
+                L_FOOTPRINT=induct_footprint,
+                L_DEFAULT_FOOTPRINT= ''
+            ))
+
+        for induct_size in induct_sizes.split('/'):
+            text_content.append(L_LIB_UNIT_SIZE_TEMPLATE.substitute(
+                L_VALUE=','.join([induct_name,induct_size]),
+                L_FOOTPRINT="L*"+induct_size+"*",
+                L_DEFAULT_FOOTPRINT=L_DEFAULT_SIZE_LOOKUP[induct_size] if induct_size in L_DEFAULT_SIZE_LOOKUP.keys() else ''
+            ))
+        print(induct_sizes)
 
     text_to_write = L_LIB_TEMPLATE.substitute(L_CONTENT=''.join(text_content)).strip()
 
