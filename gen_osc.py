@@ -51,7 +51,8 @@ $$ENDCMP
 
 # handle OSC3225 generation
 OSC_DEFAULT_FOOTPRINT_MAPPER={
-    'OSC3225':'Oscillator:Oscillator_SMD_Abracon_ASE-4Pin_3.2x2.5mm_HandSoldering'
+    'OSC3225':'Oscillator:Oscillator_SMD_Abracon_ASE-4Pin_3.2x2.5mm_HandSoldering',
+    'HC49':'Crystal:Crystal_HC49-4H_Vertical'
 }
 
 DRAW_49S='''S -30 -60 30 60 0 1 0 N
@@ -72,6 +73,8 @@ X 3 3 100 0 50 L 50 50 1 1 P
 
 OSC_DRAW_MAPPER={
     'HC49':DRAW_49S,
+    'MC-156':DRAW_49S,
+    'MC-146':DRAW_49S,
     'OSC3225':DRAWING_3225
 }
 
@@ -110,8 +113,8 @@ def getLibFile(three_digit_codes):
     for three_digit_code, osc_footprint in three_digit_codes:
         # int_r_value = parseTextCode(three_digit_code)
         # r_three_digit_code = 'R'+getThreeDigitCode(int_r_value)
-        OSC_DEFAULT_FOOTPRINT = OSC_DEFAULT_FOOTPRINT_MAPPER[osc_footprint] if osc_footprint in OSC_DEFAULT_FOOTPRINT_MAPPER.keys() else ''
-        OSC_DRAWING = OSC_DRAW_MAPPER[osc_footprint] if osc_footprint in OSC_DRAW_MAPPER.keys() else ''
+        OSC_DEFAULT_FOOTPRINT = OSC_DEFAULT_FOOTPRINT_MAPPER[osc_footprint] if osc_footprint in OSC_DEFAULT_FOOTPRINT_MAPPER.keys() else OSC_DEFAULT_FOOTPRINT_MAPPER['HC49']
+        OSC_DRAWING = OSC_DRAW_MAPPER[osc_footprint] if osc_footprint in OSC_DRAW_MAPPER.keys() else OSC_DRAW_MAPPER['HC49']
         text_content.append(C_LIB_UNIT_TEMPLATE.substitute(
             O_VALUE=three_digit_code,
             OSC_FOOTPRINT='*%s*' % osc_footprint,
@@ -153,7 +156,7 @@ def main():
             test_line = test_line.strip()
 
             osc_value, osc_footprint = test_line.split(',')
-            raw_values.append(('O'+osc_value.replace('/',','),osc_footprint))
+            raw_values.append(('O_'+osc_value.replace('/',','),osc_footprint))
 
     getLibFile(raw_values)
     getDcmFile(raw_values)
