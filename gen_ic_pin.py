@@ -5,6 +5,8 @@ from string import Template
 import csv
 
 
+d_multiplex={}
+
 """
 DRAW
 X right 1 -500 750 200 R 50 50 1 1 I
@@ -92,6 +94,10 @@ def GetPinArray(l_pin_configuration):
 
             CURRENT_Y_POS = PIN_Y_START_LOC - PIN_Y_SEP * j
 
+            if pin_name in d_multiplex.keys():
+                pin_name = '/'.join([pin_name, d_multiplex[pin_name]])
+                print(pin_name)
+
             l_temp.append(getPinText(pin_name,pin_ball,PIN_X_START_LOC,CURRENT_Y_POS,200,'R',symbol_grouping=pin_group,pin_type=pin_type))
 
     return '\n'.join(l_temp)
@@ -101,7 +107,13 @@ def selfTest():
     testgetDrawText()
     print(getDrawText(GetPinArray()))
 
-with open('./allwinner_H3.csv','r') as f:
+with open('./allwinner_h3_multiplex.csv','r') as f1:
+    multiplex_pins = f1.readlines()
+    for multiplex_pin in multiplex_pins:
+        multiplex_pin = multiplex_pin.strip().split(',')
+        d_multiplex[multiplex_pin[0]] = multiplex_pin[1]
+
+with open('./allwinner_h3.csv','r') as f:
     pin_grouping = ''
     l_splitted=[]
     csv_pins = f.readlines()
