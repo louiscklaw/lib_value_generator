@@ -67,17 +67,28 @@ def testgetDrawText():
 def GetPinArray(l_pin_configuration):
     l_temp = []
     last_pin_group = j=0
+    pin_in_group = 0
 
     for i in range(0,len(l_pin_configuration)):
         pin_group=pin_balls=pin_name=pin_type=''
 
+
+        # FIXME: dirty way for temporary working
         pin_group=l_pin_configuration[i][0]
+        START_Y_POS = 0 - (int(IDX_PIN_GROUPING[pin_group]/2))* PIN_Y_SEP
+
         pin_group = IDX_PIN_GROUPING.keys().index(pin_group)+1
         if i == 0:
             last_pin_group = pin_group
 
+        if last_pin_group != pin_group:
+            pin_in_group=0
+            last_pin_group= pin_group
+        pin_in_group+=1
         pin_balls = l_pin_configuration[i][1:-6]
         pin_name = l_pin_configuration[i][-6]
+
+
         for key in PIN_TYPE_MAPPING.keys():
             if pin_type in key.split(','):
                 pin_type = PIN_TYPE_MAPPING[key]
@@ -85,20 +96,20 @@ def GetPinArray(l_pin_configuration):
                 pin_type = PIN_TYPE_MAPPING['A']
         # else:
         #     pin_type = DEFAULT_PIN_TYPE
-        for pin_ball in pin_balls:
-            if pin_group != last_pin_group:
-                j=0
-                last_pin_group = pin_group
-            else:
-                j+=1
 
-            CURRENT_Y_POS = PIN_Y_START_LOC - PIN_Y_SEP * j
+        CURRENT_Y_POS = START_Y_POS + PIN_Y_SEP * (pin_in_group)
+        # print(pin_in_group)
+        # print(CURRENT_Y_POS)
+        # print(START_Y_POS)
+        # print(PIN_Y_SEP)
 
-            if pin_name in d_multiplex.keys():
-                pin_name = '/'.join([pin_name, d_multiplex[pin_name]])
-                print(pin_name)
 
-            l_temp.append(getPinText(pin_name,pin_ball,PIN_X_START_LOC,CURRENT_Y_POS,200,'R',symbol_grouping=pin_group,pin_type=pin_type))
+        if pin_name in d_multiplex.keys():
+            pin_name = '/'.join([pin_name, d_multiplex[pin_name]])
+            # print(pin_name)
+
+        l_temp.append(getPinText(pin_name,pin_balls[0],PIN_X_START_LOC,CURRENT_Y_POS,200,'R',symbol_grouping=pin_group,pin_type=pin_type))
+
 
     return '\n'.join(l_temp)
 
@@ -122,9 +133,23 @@ with open('./allwinner_h3.csv','r') as f:
         if len(csv_pin) > 0:
             if csv_pin[0]=="#":
                 pin_grouping=csv_pin.replace('#','')
-                IDX_PIN_GROUPING[pin_grouping]=''
+                IDX_PIN_GROUPING[pin_grouping]=0
             else:
-                l_splitted.append([pin_grouping]+csv_pin.strip().split(','))
+                csv_splitted = csv_pin.strip().split(',')
+                if len(csv_splitted) > 8:
+                    pin_balls = csv_splitted[1:-6]
+                    pin_name = csv_splitted[-6]
+                    function = csv_splitted[-5]
+                    the_rest = csv_splitted[-4:]
+                    for pin_ball in pin_balls:
+                        # ['T17', 'SA0', 'DRAM', 'I/O', 'Z', '-', '-']
 
+
+                        l_splitted.append([pin_grouping]+[pin_ball,pin_name, function]+the_rest)
+                else:
+                    l_splitted.append([pin_grouping]+csv_splitted)
+
+
+                IDX_PIN_GROUPING[pin_grouping]+=1
 
     print(getDrawText(GetPinArray(l_splitted)))
