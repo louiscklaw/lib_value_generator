@@ -1,0 +1,170 @@
+
+                                            Table 3-2. Multiplexing Functions
+                                           Default
+  Pin     Default        IO     Default
+                                           Pull-up/     Function 2       Function3       Function 4     Function 5    Function 6
+ Name    Function      Type    IO State
+                                            down
+  PA0                   I/O       DIS          Z        UART2_TX         JTAG_MS              -             -         PA_EINT0
+  PA1                   I/O       DIS          Z        UART2_RX         JTAG_CK              -             -         PA_EINT1
+  PA2                   I/O       DIS          Z        UART2_RTS         JTAG_DO             -             -         PA_EINT2
+  PA3                   I/O       DIS          Z        UART2_CTS          JTAG_DI            -             -         PA_EINT3
+  PA4                   I/O       DIS          Z        UART0_TX              -               -             -         PA_EINT4
+  PA5                   I/O       DIS          Z        UART0_RX            PWM0              -             -         PA_EINT5
+  PA6                   I/O       DIS          Z       SIM_PWREN              -               -             -         PA_EINT6
+  PA7                   I/O       DIS          Z          SIM_CLK             -               -             -         PA_EINT7
+  PA8                   I/O       DIS          Z        SIM_DATA              -               -             -         PA_EINT8
+  PA9                   I/O       DIS          Z          SIM_RST             -               -             -         PA_EINT9
+ PA10                   I/O       DIS          Z         SIM_DET              -               -             -         PA_EINT10
+           GPIO
+ PA11                   I/O       DIS          Z         TWI0_SCK           DI_TX             -             -         PA_EINT11
+ PA12                   I/O       DIS          Z        TWI0_SDA            DI_RX             -             -         PA_EINT12
+ PA13                   I/O       DIS          Z          SPI1_CS       UART3_TX              -             -         PA_EINT13
+ PA14                   I/O       DIS          Z         SPI1_CLK       UART3_RX              -             -         PA_EINT14
+ PA15                   I/O       DIS          Z        SPI1_MOSI       UART3_RTS             -             -         PA_EINT15
+ PA16                   I/O       DIS          Z        SPI1_MISO       UART3_CTS             -             -         PA_EINT16
+ PA17                   I/O       DIS          Z        OWA_OUT               -               -             -         PA_EINT17
+ PA18                   I/O       DIS          Z       PCM0_SYNC         TWI1_SCK             -             -         PA_EINT18
+ PA19                   I/O       DIS          Z        PCM0_CLK        TWI1_SDA              -             -         PA_EINT19
+ PA20                   I/O       DIS          Z       PCM0_DOUT       SIM_VPPEN              -             -         PA_EINT20
+ PA21                   I/O       DIS          Z        PCM0_DIN        SIM_VPPPP             -             -         PA_EINT21
+  PC0                   I/O       DIS          Z        NAND_WE         SPI0_MOSI             -             -             -
+  PC1                   I/O       DIS          Z        NAND_ALE        SPI0_MISO             -             -             -
+  PC2                   I/O       DIS          Z        NAND_CLE          SPI0_CLK            -             -             -
+  PC3                   I/O       DIS      Pull-up      NAND_CE1           SPI0_CS            -             -             -
+  PC4                   I/O       DIS      Pull-up      NAND_CE0              -               -             -             -
+  PC5                   I/O       DIS          Z         NAND_RE         SDC2_CLK             -             -             -
+           GPIO
+  PC6                   I/O       DIS      Pull-up      NAND_RB0        SDC2_CMD              -             -             -
+  PC7                   I/O       DIS      Pull-up      NAND_RB1              -               -             -             -
+  PC8                   I/O       DIS          Z        NAND_DQ0          SDC2_D0             -             -             -
+  PC9                   I/O       DIS          Z        NAND_DQ1          SDC2_D1             -             -             -
+ PC10                   I/O       DIS          Z        NAND_DQ2          SDC2_D2             -             -             -
+ PC11                   I/O       DIS          Z        NAND_DQ3          SDC2_D3             -             -             -
+  H3 Datasheet(Revision1.2)             Copyright© 2015 Allwinner Technology Co.,Ltd.All Rights Reserved.             Page 74
+                                                                                                             Pin Description
+                                       Default
+ Pin     Default        IO Default
+                                       Pull-up/     Function 2      Function3        Function 4     Function 5    Function 6
+Name    Function      Type IO State
+                                        down
+PC12                   I/O   DIS           Z        NAND_DQ4         SDC2_D4              -             -             -
+PC13                   I/O   DIS           Z        NAND_DQ5         SDC2_D5              -             -             -
+PC14                   I/O   DIS           Z        NAND_DQ6         SDC2_D6              -             -             -
+PC15                   I/O   DIS           Z        NAND_DQ7         SDC2_D7              -             -             -
+PC16                   I/O   DIS           Z        NAND_DQS        SDC2_RST              -             -             -
+                                                  RGMII_RXD3/
+ PD0                   I/O   DIS           Z        MII_RXD3/            -                -             -             -
+                                                    RMII_NULL
+                                                  RGMII_RXD2/
+ PD1                   I/O   DIS           Z      MII_RXD2/RM            -                -             -             -
+                                                      II_NULL
+                                                  RGMII_RXD1/
+ PD2                   I/O   DIS           Z      MII_RXD2/RM            -                -             -             -
+                                                      II_RXD1
+                                                  RGMII_RXD0/
+ PD3                   I/O   DIS           Z      MII_RXD1/RM            -                -             -             -
+                                                      II_RXD0
+                                                   RGMII_RXCK/
+ PD4                   I/O   DIS           Z      MII_RXCK/RMI           -                -             -             -
+                                                       I_NULL
+                                                  RGMII_RXCTL/
+ PD5                   I/O   DIS           Z      MII_RXDV/RM            -                -             -             -
+                                                      II_NULL
+          GPIO                                     RGMII_NULL/
+ PD6                   I/O   DIS           Z       MII_RXERR/R           -                -             -             -
+                                                     MII_RXER
+                                                   RGMII_TXD3/
+ PD7                   I/O   DIS           Z      MII_TXD3/RMI           -                -             -             -
+                                                       I_NULL
+                                                   RGMII_TXD2/
+ PD8                   I/O   DIS           Z      MII_TXD2/RMI           -                -             -             -
+                                                       I_NULL
+                                                   RGMII_TXD1/
+ PD9                   I/O   DIS           Z      MII_TXD1/RMI           -                -             -             -
+                                                       I_TXD1
+                                                   RGMII_TXD0/
+PD10                   I/O   DIS           Z      MII_TXD0/RMI           -                -             -             -
+                                                       I_TXD0
+                                                   RGMII_NULL/
+PD11                   I/O   DIS           Z      MII_CRS/RMII           -                -             -             -
+                                                     _CRS_DV
+PD12                   I/O   DIS           Z       RGMII_TXCK/           -                -             -             -
+ H3 Datasheet(Revision1.2)          Copyright© 2015 Allwinner Technology Co.,Ltd.All Rights Reserved.             Page 75
+                                                                                                              Pin Description
+                                        Default
+ Pin     Default        IO   Default
+                                        Pull-up/     Function 2      Function3        Function 4     Function 5    Function 6
+Name    Function      Type  IO State
+                                         down
+                                                   MII_TXCK/RMI
+                                                        I_TXCK
+                                                   RGMII_TXCTL/
+PD13                   I/O    DIS           Z      MII_TXEN/RMI            -               -             -             -
+                                                       I_TXEN
+                                                    RGMII_NULL/
+PD14                   I/O    DIS           Z       MII_TXERR/R            -               -             -             -
+                                                      MII_NULL
+                                                   RGMII_CLKIN/
+PD15                   I/O    DIS           Z      MII_COL/RMII            -               -             -             -
+                                                        _NULL
+PD16                   I/O    DIS           Z            MDC               -               -             -             -
+PD17                   I/O    DIS           Z            MDIO              -               -             -             -
+ PE0                   I/O    DIS           Z         CSI_PCLK          TS_CLK             -             -             -
+ PE1                   I/O    DIS           Z         CSI_MCLK          TS_ERR             -             -             -
+ PE2                   I/O    DIS           Z        CSI_HSYNC        TS_SYNC              -             -             -
+ PE3                   I/O    DIS           Z        CSI_VSYNC        TS_DVLD              -             -             -
+ PE4                   I/O    DIS           Z           CSI_D0          TS_D0              -             -             -
+ PE5                   I/O    DIS           Z           CSI_D1          TS_D1              -             -             -
+ PE6                   I/O    DIS           Z           CSI_D2          TS_D2              -             -             -
+ PE7                   I/O    DIS           Z           CSI_D3          TS_D3              -             -             -
+          GPIO
+ PE8                   I/O    DIS           Z           CSI_D4          TS_D4              -             -             -
+ PE9                   I/O    DIS           Z           CSI_D5          TS_D5              -             -             -
+PE10                   I/O    DIS           Z           CSI_D6          TS_D6              -             -             -
+PE11                   I/O    DIS           Z           CSI_D7          TS_D7              -             -             -
+PE12                   I/O    DIS           Z          CSI_SCK       TWI2_SCK              -             -             -
+PE13                   I/O    DIS           Z          CSI_SDA       TWI2_SDA              -             -             -
+PE14                   I/O    DIS           Z              -               -               -             -             -
+PE15                   I/O    DIS           Z              -               -               -             -             -
+ PF0                   I/O JTAG_MS          Z         SDC0_D1         JTAG_MS              -             -             -
+ PF1                   I/O  JTAG_DI         Z         SDC0_D0          JTAG_DI             -             -             -
+ PF2                   I/O    DIS           Z         SDC0_CLK       UART0_TX              -             -             -
+ PF3      GPIO         I/O JTAG_DO          Z        SDC0_CMD         JTAG_DO              -             -             -
+ PF4                   I/O    DIS           Z         SDC0_D3        UART0_RX              -             -             -
+ PF5                   I/O JTAG_CK          Z         SDC0_D2         JTAG_CK              -             -             -
+ PF6                   I/O    DIS           Z        SDC0_DET              -               -             -             -
+ PG0                   I/O    DIS           Z         SDC1_CLK             -               -             -         PG_EINT0
+ PG1                   I/O    DIS           Z        SDC1_CMD              -               -             -         PG_EINT1
+ PG2      GPIO         I/O    DIS           Z         SDC1_D0              -               -             -         PG_EINT2
+ PG3                   I/O    DIS           Z         SDC1_D1              -               -             -         PG_EINT3
+ PG4                   I/O    DIS           Z         SDC1_D2              -               -             -         PG_EINT4
+ H3 Datasheet(Revision1.2)           Copyright© 2015 Allwinner Technology Co.,Ltd.All Rights Reserved.             Page 76
+                                                                                                             Pin Description
+                                       Default
+ Pin     Default        IO Default
+                                       Pull-up/     Function 2      Function3        Function 4     Function 5    Function 6
+Name    Function      Type IO State
+                                        down
+ PG5                   I/O   DIS           Z          SDC1_D3            -                -             -          PG_EINT5
+ PG6                   I/O   DIS           Z         UART1_TX            -                -             -          PG_EINT6
+ PG7                   I/O   DIS           Z         UART1_RX            -                -             -          PG_EINT7
+ PG8                   I/O   DIS           Z        UART1_RTS            -                -             -          PG_EINT8
+ PG9                   I/O   DIS           Z        UART1_CTS            -                -             -          PG_EINT9
+PG10                   I/O   DIS           Z       PCM1_SYNC             -                -             -         PG_EINT10
+PG11                   I/O   DIS           Z        PCM1_CLK             -                -             -         PG_EINT11
+PG12                   I/O   DIS           Z       PCM1_DOUT             -                -             -         PG_EINT12
+PG13                   I/O   DIS           Z        PCM1_DIN             -                -             -         PG_EINT13
+ PL0                   I/O   DIS       Pull-up      S_TWI_SCK            -                -             -         S_PL_EINT0
+ PL1                   I/O   DIS       Pull-up      S_TWI_SDA            -                -             -         S_PL_EINT1
+ PL2                   I/O   DIS           Z        S_UART_TX            -                -             -         S_PL_EINT2
+ PL3                   I/O   DIS           Z        S_UART_RX            -                -             -         S_PL_EINT3
+ PL4                   I/O   DIS           Z        S_JTAG_MS            -                -             -         S_PL_EINT4
+ PL5                   I/O   DIS           Z        S_JTAG_CK            -                -             -         S_PL_EINT5
+          GPIO
+ PL6                   I/O   DIS           Z        S_JTAG_DO            -                -             -         S_PL_EINT6
+ PL7                   I/O   DIS           Z         S_JTAG_DI           -                -             -         S_PL_EINT7
+ PL8                   I/O   DIS           Z              -              -                -             -         S_PL_EINT8
+ PL9                   I/O   DIS           Z              -              -                -             -         S_PL_EINT9
+PL10                   I/O   DIS           Z           S_PWM             -                -             -        S_PL_EINT10
+PL11                   I/O   DIS           Z          S_CIR_RX           -                -             -        S_PL_EINT12
