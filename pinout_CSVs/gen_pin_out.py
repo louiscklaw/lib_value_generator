@@ -11,12 +11,25 @@ import logging
 import traceback
 from pprint import pprint
 
+
+# GEN_STYLE
+GEN_STYLE_U=0
+GEN_STYLE_ODD_EVEN=1
+
+gen_pin_style=GEN_STYLE_U
+
+
+DRAW_X_START_POS=-500
 DRAW_Y_START_POS=750
 Y_SPACING=100
+X_SPACING=800
 
-CSV_FILENAME = 'RTL8211D.csv'
+
+CSV_FILENAME = 'MIPI-CSI-FFC-Connector.csv'
 CSV_FILEPATH = '{}/{}'.format(CWD, CSV_FILENAME)
 
+
+STAGING_COMPONENT_LIB_FILEPATH='/home/logic/_workspace/kicad/kicad_library/kicad-symbols/taobao-components-staging.lib'
 STAGING_COMPONENT_TEMPLATE="""EESchema-LIBRARY Version 2.4
 #encoding utf-8
 #
@@ -34,14 +47,16 @@ F3 "" -500 100 50 H I C CNN
 
 DEF_TEMPALTE="""{}\nENDDEF"""
 DRAW_TEMPLATE="""DRAW\n{}\nENDDRAW"""
-PIN_PRINT_TEMPLATE='X {pin_name} {pin_number} -500 {pin_pos} 200 R 50 50 1 1 {pin_type}'
-
-
+PIN_PRINT_TEMPLATE='X {pin_name} {pin_number} {pin_x_pos} {pin_y_pos} 200 R 50 50 1 1 {pin_type}'
 
 PIN_TYPE_MAPPER={
     'DEFAULT':'I',
     'GND':'P',
-    'NC':'N'
+    'NC':'N',
+    '3.3V':'W',
+    '5V':'W',
+    '+3.3V':'W',
+    '+5V':'W',
     }
 
 def readCSV(csv_file):
@@ -54,14 +69,27 @@ def readCSV(csv_file):
     return pin_confs
 
 def getPins(pin_confs):
-    kicad_pins = [
-        PIN_PRINT_TEMPLATE.format(
-            pin_name=pin_confs[i],
-            pin_number=i+1,
-            pin_pos=DRAW_Y_START_POS-(i*Y_SPACING),
-            pin_type=PIN_TYPE_MAPPER[pin_confs[i]] if pin_confs[i] in PIN_TYPE_MAPPER.keys()  else PIN_TYPE_MAPPER['DEFAULT']
-            ) for i in range(0,len(pin_confs))
-    ]
+    if gen_pin_style == GEN_STYLE_ODD_EVEN:
+        kicad_pins = [
+            PIN_PRINT_TEMPLATE.format(
+                pin_name=pin_confs[i],
+                pin_number=i+1,
+                pin_x_pos=DRAW_X_START_POS+X_SPACING if i%2==0 else 0,
+                pin_y_pos=DRAW_Y_START_POS-(Y_SPACING*i//2),
+                pin_type=PIN_TYPE_MAPPER[pin_confs[i]] if pin_confs[i] in PIN_TYPE_MAPPER.keys()  else PIN_TYPE_MAPPER['DEFAULT']
+                ) for i in range(0,len(pin_confs))
+        ]
+
+    else:
+        kicad_pins = [
+            PIN_PRINT_TEMPLATE.format(
+                pin_name=pin_confs[i],
+                pin_number=i+1,
+                pin_x_pos=DRAW_X_START_POS,
+                pin_y_pos=DRAW_Y_START_POS-(i*Y_SPACING),
+                pin_type=PIN_TYPE_MAPPER[pin_confs[i]] if pin_confs[i] in PIN_TYPE_MAPPER.keys()  else PIN_TYPE_MAPPER['DEFAULT']
+                ) for i in range(0,len(pin_confs))
+        ]
     return kicad_pins
 
 def getStagingComponents(kicad_pins):
@@ -79,9 +107,14 @@ def copyToClipbaord(text_to_copy):
     pyperclip.copy(text_to_copy)
     print('output copied to clipboard')
 
+def writeStagingComponent(component_def):
+    with open(STAGING_COMPONENT_LIB_FILEPATH, 'r+') as f:
+        f.writelines(component_def)
+
 pin_confs = readCSV(CSV_FILEPATH)
 
 kicad_pins = getPins(pin_confs)
 result = getStagingComponents(kicad_pins)
 print(result)
-copyToClipbaord(result)
+# copyToClipbaord(result)
+writeStagingComponent(result)
