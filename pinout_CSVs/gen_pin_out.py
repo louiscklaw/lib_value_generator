@@ -25,7 +25,7 @@ Y_SPACING=100
 X_SPACING=800
 
 
-CSV_FILENAME = 'MIPI-CSI-FFC-Connector.csv'
+CSV_FILENAME = 'DDR3_FBGA96.csv'
 CSV_FILEPATH = '{}/{}'.format(CWD, CSV_FILENAME)
 
 
@@ -69,27 +69,39 @@ def readCSV(csv_file):
     return pin_confs
 
 def getPins(pin_confs):
-    if gen_pin_style == GEN_STYLE_ODD_EVEN:
+    if len(pin_confs[0].split(',')) > 1:
+        # TODO: tidy me, temp branch out for handle customize pin number
         kicad_pins = [
             PIN_PRINT_TEMPLATE.format(
-                pin_name=pin_confs[i],
-                pin_number=i+1,
-                pin_x_pos=DRAW_X_START_POS+X_SPACING if i%2==0 else 0,
-                pin_y_pos=DRAW_Y_START_POS-(Y_SPACING*i//2),
-                pin_type=PIN_TYPE_MAPPER[pin_confs[i]] if pin_confs[i] in PIN_TYPE_MAPPER.keys()  else PIN_TYPE_MAPPER['DEFAULT']
-                ) for i in range(0,len(pin_confs))
-        ]
-
-    else:
-        kicad_pins = [
-            PIN_PRINT_TEMPLATE.format(
-                pin_name=pin_confs[i],
-                pin_number=i+1,
+                pin_name=pin_confs[i].split(',')[1],
+                pin_number=pin_confs[i].split(',')[0],
                 pin_x_pos=DRAW_X_START_POS,
                 pin_y_pos=DRAW_Y_START_POS-(i*Y_SPACING),
                 pin_type=PIN_TYPE_MAPPER[pin_confs[i]] if pin_confs[i] in PIN_TYPE_MAPPER.keys()  else PIN_TYPE_MAPPER['DEFAULT']
                 ) for i in range(0,len(pin_confs))
         ]
+    else:
+        if gen_pin_style == GEN_STYLE_ODD_EVEN:
+            kicad_pins = [
+                PIN_PRINT_TEMPLATE.format(
+                    pin_name=pin_confs[i],
+                    pin_number=i+1,
+                    pin_x_pos=DRAW_X_START_POS+X_SPACING if i%2==0 else 0,
+                    pin_y_pos=DRAW_Y_START_POS-(Y_SPACING*i//2),
+                    pin_type=PIN_TYPE_MAPPER[pin_confs[i]] if pin_confs[i] in PIN_TYPE_MAPPER.keys()  else PIN_TYPE_MAPPER['DEFAULT']
+                    ) for i in range(0,len(pin_confs))
+            ]
+
+        else:
+            kicad_pins = [
+                PIN_PRINT_TEMPLATE.format(
+                    pin_name=pin_confs[i],
+                    pin_number=i+1,
+                    pin_x_pos=DRAW_X_START_POS,
+                    pin_y_pos=DRAW_Y_START_POS-(i*Y_SPACING),
+                    pin_type=PIN_TYPE_MAPPER[pin_confs[i]] if pin_confs[i] in PIN_TYPE_MAPPER.keys()  else PIN_TYPE_MAPPER['DEFAULT']
+                    ) for i in range(0,len(pin_confs))
+            ]
     return kicad_pins
 
 def getStagingComponents(kicad_pins):
@@ -112,8 +124,8 @@ def writeStagingComponent(component_def):
         f.writelines(component_def)
 
 pin_confs = readCSV(CSV_FILEPATH)
-
 kicad_pins = getPins(pin_confs)
+
 result = getStagingComponents(kicad_pins)
 print(result)
 # copyToClipbaord(result)
