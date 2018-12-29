@@ -25,7 +25,7 @@ Y_SPACING=100
 X_SPACING=800
 
 
-CSV_FILENAME = 'EMMC_BGA169.csv'
+CSV_FILENAME = 'STM32F030x4_6_8.csv'
 CSV_FILEPATH = '{}/{}'.format(CWD, CSV_FILENAME)
 
 
@@ -57,7 +57,19 @@ PIN_TYPE_MAPPER={
     '5V':'W',
     '+3.3V':'W',
     '+5V':'W',
+    'VSS':'W','VSSA':'W',
+    'VDD':'W','VDDA':'W',
     }
+# append for STM32
+for char in ['A','B','C','D','E','F','G']:
+    for digit in range(0,99):
+        PIN_TYPE_MAPPER['P'+char+str(digit)] = 'B'
+
+
+
+
+
+
 
 def readCSV(csv_file):
     with open(csv_file,'r') as f:
