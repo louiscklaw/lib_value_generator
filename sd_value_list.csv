@@ -1,6 +1,6 @@
 1N5817_SS12,1206/SOD*123,20V_1Amp,1N5817_SS12
 1N5819_SS14,1206/SOD*123,40V_1Amp,1N5819_SS14
-1N4001_M1,1206/SOD*123,50V_1A,M1,https://diotec.com/tl_files/diotec/files/pdf/datasheets/m1.pdf
+1N4001_M1,do214ac/1206/SOD*123,50V_1A,M1,https://diotec.com/tl_files/diotec/files/pdf/datasheets/m1.pdf
 M4,1206/SOD*123,400V_1A,M1,https://diotec.com/tl_files/diotec/files/pdf/datasheets/m1.pdf
 M7,1206/SOD*123,700V_1A,M1,https://www.google.com/search?q=M7+datasheet
 SS24,1206/SOD*123,40V_2Amp,SS36
@@ -19,3 +19,4 @@ SS16,1206/SOD*123,60V_1Amp,SS16
 ES1J,1206/SOD*123/DO*214,600V_1A,ES1J,https://www.mouser.com/ds/2/258/ES1A-ES1M(HSMA)-479844.pdf
 ES1D,1206/SOD*123/DO*214,200V_1A,ES1D,https://www.mouser.com/ds/2/258/ES1A-ES1M(HSMA)-479844.pdf
 ES1M,1206/SOD*123/DO*214,1000V_1A,ES1M,https://www.mouser.com/ds/2/258/ES1A-ES1M(HSMA)-479844.pdf
+B5819WS,SOD*323,,,

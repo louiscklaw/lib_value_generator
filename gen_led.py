@@ -33,7 +33,7 @@ LED_LIB_UNIT_TEMPLATE=Template("""#
 DEF $component_name D 0 10 N N 1 F N
 F0 "D" -50 125 50 H V L CNN
 F1 "$component_name" -175 -100 50 H V L CNN
-F2 "" 0 0 50 V I C CNN
+F2 "$DEFAULT_LED_FOOTPRINT" 0 0 50 V I C CNN
 F3 "" 0 0 50 V I C CNN
 $$FPLIST
  $LED_SIZE
@@ -57,6 +57,14 @@ K LED diode light-emitting-diode https://item.taobao.com/item.htm?spm=2013.1.0.0
 F ~
 $$ENDCMP
 """)
+
+TRANSLATE_DEFAULT_LED_FOOTPRINT={
+    '0402':'LED_SMD:LED_0402_1005Metric',
+    '0603':'LED_SMD:LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder',
+    '0805':'LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder',
+    '1206':'LED_SMD:LED_1206_3216Metric_Pad1.42x1.75mm_HandSolder',
+    '1210':'LED_SMD:LED_1210_3225Metric_Pad1.42x2.65mm_HandSolder'
+}
 
 d_keyword_lookup = {}
 def readKeywordTable():
@@ -82,10 +90,24 @@ def parseTextCode(number_value):
 
 def getLibFile(components):
     led_units=[]
+
+
     for led_color, led_sizes in components:
         led_size_texts = (LED_SIZE_TEXT_TEMPLATE.substitute(SIZE=led_size) for led_size in led_sizes)
         led_size_texts = '\n '.join(led_size_texts)
-        led_units.append(LED_LIB_UNIT_TEMPLATE.substitute(component_name= led_color, LED_SIZE=led_size_texts))
+        led_units.append(LED_LIB_UNIT_TEMPLATE.substitute(
+            component_name= led_color,
+            DEFAULT_LED_FOOTPRINT='',
+            LED_SIZE=led_size_texts))
+
+
+        for led_size in led_sizes:
+            # led_size_texts = (LED_SIZE_TEXT_TEMPLATE.substitute(SIZE=led_size) for led_size in led_sizes)
+            # led_size_texts = '\n '.join(led_size_texts)
+            led_units.append(LED_LIB_UNIT_TEMPLATE.substitute(
+                component_name= ','.join([led_color, led_size]),
+                DEFAULT_LED_FOOTPRINT=TRANSLATE_DEFAULT_LED_FOOTPRINT[led_size],
+                LED_SIZE="*"+led_size+"*"))
 
     led_lib = LED_LIB_TEMPLATE.substitute(LED_CONTENT=''.join(led_units))
 
@@ -116,15 +138,12 @@ def main():
                 test_line = test_line.strip()
                 splitted = test_line.split(',')
                 led_color = splitted[0]
-                led_sizes = splitted[1:]
+                led_sizes = splitted[1].split('/')
 
                 raw_values.append(('LED_'+led_color, led_sizes))
             except Exception as e:
                 pprint(test_line)
                 raise e
-                pass
-
-
 
         getLibFile(raw_values)
         getDcmFile(raw_values)
