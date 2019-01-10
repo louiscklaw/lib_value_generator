@@ -16,7 +16,7 @@ from pprint import pprint
 GEN_STYLE_U=0
 GEN_STYLE_ODD_EVEN=1
 
-gen_pin_style=GEN_STYLE_U
+gen_pin_style=GEN_STYLE_ODD_EVEN
 
 
 DRAW_X_START_POS=-500
@@ -25,7 +25,7 @@ Y_SPACING=100
 X_SPACING=800
 
 
-CSV_FILENAME = 'STM32F042F6P6.csv'
+CSV_FILENAME = 'waveshare-ov2640.csv'
 CSV_FILEPATH = '{}/{}'.format(CWD, CSV_FILENAME)
 
 
