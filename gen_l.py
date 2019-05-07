@@ -92,7 +92,11 @@ L_DEFAULT_SIZE_LOOKUP={
     "0805":'Inductor_SMD:L_0805_2012Metric_Pad1.15x1.40mm_HandSolder',
     '0603':'Inductor_SMD:L_0603_1608Metric_Pad1.05x0.95mm_HandSolder',
     '0402':'Inductor_SMD:L_0402_1005Metric',
+    'CD32':'w_smd_inductors:inductor_smd_3x1.4mm',
     'CD43':'w_smd_inductors:inductor_smd_4.8x2.8mm',
+    'CD54':'w_smd_inductors:inductor_smd_5x4mm',
+    'CD74':'w_smd_inductors:inductor_smd_6x4.3mm',
+    'CD127':'footprint-lib:L_CD127_shielded',
     '1040':'Inductor_SMD:L_Wuerth_HCI-1040'
 }
 
@@ -192,3 +196,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    print('done')
