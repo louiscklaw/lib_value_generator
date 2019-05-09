@@ -51,7 +51,7 @@ $$ENDCMP
 
 # handle OSC3225 generation
 OSC_DEFAULT_FOOTPRINT_MAPPER={
-    'OSC3225':'Oscillator:Oscillator_SMD_Abracon_ASE-4Pin_3.2x2.5mm_HandSoldering',
+    'OSC3225':'footprint-lib:OSC_3225',
     'HC49':'Crystal:Crystal_HC49-4H_Vertical'
 }
 
