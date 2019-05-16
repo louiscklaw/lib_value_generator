@@ -118,7 +118,13 @@ def selfTest():
     testgetDrawText()
     print(getDrawText(GetPinArray()))
 
-with open('./pinout_CSVs/STM32F407VET6.csv','r') as f:
+with open('./allwinner_h3_multiplex.csv','r') as f1:
+    multiplex_pins = f1.readlines()
+    for multiplex_pin in multiplex_pins:
+        multiplex_pin = multiplex_pin.strip().split(',')
+        d_multiplex[multiplex_pin[0]] = multiplex_pin[1]
+
+with open('./allwinner_h3.csv','r') as f:
     pin_grouping = ''
     l_splitted=[]
     csv_pins = f.readlines()
@@ -145,10 +151,5 @@ with open('./pinout_CSVs/STM32F407VET6.csv','r') as f:
 
 
                 IDX_PIN_GROUPING[pin_grouping]+=1
-
-    # from pprint import pprint
-    # pprint(l_splitted)
-    # import sys
-    # sys.exit()
 
     print(getDrawText(GetPinArray(l_splitted)))
