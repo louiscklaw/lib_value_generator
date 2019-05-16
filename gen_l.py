@@ -81,8 +81,8 @@ ENDDEF
 L_DCM_UNIT_TEMPLATE=Template("""#
 $$CMP $L_VALUE
 D Inductor, small symbol
-K inductor choke coil reactor magnetic
-F ~
+K inductor choke coil reactor magnetic $L_KEYWORD
+F $L_DATASHEET
 $$ENDCMP
 """)
 
@@ -97,8 +97,11 @@ L_DEFAULT_SIZE_LOOKUP={
     'CD54':'w_smd_inductors:inductor_smd_5x4mm',
     'CD74':'w_smd_inductors:inductor_smd_6x4.3mm',
     'CD127':'footprint-lib:L_CD127_shielded',
-    '1040':'Inductor_SMD:L_Wuerth_HCI-1040'
+    '1040':'Inductor_SMD:L_Wuerth_HCI-1040',
+    'CD1040':'Inductor_SMD:L_Wuerth_HCI-1040'
 }
+
+generated_component_name = []
 
 d_keyword_lookup = {}
 def readKeywordTable():
@@ -133,7 +136,7 @@ def getLibFile(raw_values):
     text_content=[]
 
     for raw_value in raw_values:
-        induct_name, induct_sizes = raw_value
+        induct_name, induct_sizes, induct_link = raw_value
         induct_footprint = FP_TEMPLATE
         if len(induct_sizes) > 0:
             induct_footprint = '\n'.join([ "L*"+induct_size+"*"  for induct_size in induct_sizes.split('/')])
@@ -158,10 +161,23 @@ def getLibFile(raw_values):
 
 def getDcmFile(three_digit_codes):
     text_content=[]
-    for induct_name, induct_sizes in three_digit_codes:
-        # int_r_value = parseTextCode(three_digit_code)
-        # r_three_digit_code = 'C'+getThreeDigitCode(int_r_value)
-        text_content.append(L_DCM_UNIT_TEMPLATE.substitute(L_VALUE=induct_name, L_KEYWORD=TAOBAO_LINK))
+
+    for induct_name, induct_sizes,induct_link in three_digit_codes:
+        # for generate general component
+        if induct_name not in generated_component_name:
+            generated_component_name.append(induct_name)
+
+            induct_link = '~' if induct_link =='' else induct_link
+            text_content.append(L_DCM_UNIT_TEMPLATE.substitute(L_VALUE=induct_name, L_KEYWORD=TAOBAO_LINK, L_DATASHEET=induct_link))
+
+        # for gernerate component with foorprint definitation
+        for induct_size in induct_sizes.split('/'):
+            induct_name_with_size =','.join([induct_name,induct_size])
+            print(induct_name_with_size)
+
+            induct_link = '~' if induct_link =='' else induct_link
+            text_content.append(L_DCM_UNIT_TEMPLATE.substitute(L_VALUE=induct_name_with_size, L_KEYWORD=TAOBAO_LINK, L_DATASHEET=induct_link))
+
     L_content = ''.join(text_content)
 
     text_to_write = L_DCM_TEMPLATE.substitute(L_CONTENT = L_content)
@@ -181,16 +197,18 @@ def main():
             test_line = test_line.strip()
 
             try:
-                induct_name, induct_size, induct_current, induct_description = test_line.split(',')
+                induct_name, induct_size, induct_current, induct_description, induct_keyword,induct_link = test_line.split(',')
             except Exception as e:
                 print(test_line.split(','))
                 print(induct_name)
                 raise e
 
             if induct_current != '':
-                raw_values.append((','.join([induct_name, induct_current]),induct_size))
+                raw_values.append((','.join([induct_name, induct_current]),induct_size, induct_link))
             else:
-                raw_values.append((induct_name, induct_size))
+                raw_values.append((induct_name, induct_size, induct_link))
+
+
         getLibFile(raw_values)
         getDcmFile(raw_values)
 
