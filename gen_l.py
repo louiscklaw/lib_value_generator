@@ -101,7 +101,8 @@ L_DEFAULT_SIZE_LOOKUP={
     'CD1040':'Inductor_SMD:L_Wuerth_HCI-1040'
 }
 
-generated_component_name = []
+dcm_generated_component_name = []
+lib_generated_component_name = []
 
 d_keyword_lookup = {}
 def readKeywordTable():
@@ -141,11 +142,14 @@ def getLibFile(raw_values):
         if len(induct_sizes) > 0:
             induct_footprint = '\n'.join([ "L*"+induct_size+"*"  for induct_size in induct_sizes.split('/')])
 
-            text_content.append(L_LIB_UNIT_SIZE_TEMPLATE.substitute(
-                L_VALUE=','.join([induct_name]),
-                L_FOOTPRINT=induct_footprint,
-                L_DEFAULT_FOOTPRINT= ''
-            ))
+            if induct_name not in lib_generated_component_name:
+                lib_generated_component_name.append(induct_name)
+                text_content.append(L_LIB_UNIT_SIZE_TEMPLATE.substitute(
+                    L_VALUE=','.join([induct_name]),
+                    L_FOOTPRINT=induct_footprint,
+                    L_DEFAULT_FOOTPRINT= ''
+                ))
+
 
         for induct_size in induct_sizes.split('/'):
             text_content.append(L_LIB_UNIT_SIZE_TEMPLATE.substitute(
@@ -164,8 +168,8 @@ def getDcmFile(three_digit_codes):
 
     for induct_name, induct_sizes,induct_link in three_digit_codes:
         # for generate general component
-        if induct_name not in generated_component_name:
-            generated_component_name.append(induct_name)
+        if induct_name not in dcm_generated_component_name:
+            dcm_generated_component_name.append(induct_name)
 
             induct_link = '~' if induct_link =='' else induct_link
             text_content.append(L_DCM_UNIT_TEMPLATE.substitute(L_VALUE=induct_name, L_KEYWORD=TAOBAO_LINK, L_DATASHEET=induct_link))
