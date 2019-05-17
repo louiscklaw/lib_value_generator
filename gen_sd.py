@@ -71,6 +71,7 @@ ZENER_DIODE_SIZE_TEMPLATE=Template('*D*$SIZE*')
 
 TRANSLATE_DEFAULT_FOOTPRINT={
     'do214ac':'w_smd_diode:do214ac',
+    'do214aa':'w_smd_diode:do214aa',
 }
 
 d_keyword_lookup = {}
