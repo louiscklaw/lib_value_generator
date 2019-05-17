@@ -1,0 +1,50 @@
+1 V LED+ P Power for LED backlight (Anode)
+2 V LED+ P Power for LED backlight (Anode)
+3 V LED- P Power for LED backlight (Cathode)
+4 V LED- P Power for LED backlight (Cathode)
+5 GND P Power ground
+6 V COM I Common voltage
+7 DV DD P Power for Digital Circuit
+8 MODE I DE/SYNC mode select
+9 DE I Data Input Enable
+10 VS I Vertical Sync Input
+11 HS I Horizontal Sync Input
+12 B7 I Blue data(MSB)
+13 B6 I Blue data
+14 B5 I Blue data
+15 B4 I Blue data
+16 B3 I Blue data
+17 B2 I Blue data
+18 B1 I Blue data Note 2
+19 B0 I Blue data(LSB) Note 2
+20 G7 I Green data(MSB)
+21 G6 I Green data
+22 G5 I Green data
+23 G4 I Green data
+24 G3 I Green data
+25 G2 I Green data
+26 G1 I Green data Note 2
+27 G0 I Green data(LSB) Note 2
+28 R7 I Red data(MSB)
+29 R6 I Red data
+30 R5 I Red data
+31 R4 I Red data
+32 R3 I Red data
+33 R2 I Red data
+34 R1 I Red data Note 2
+35 R0 I Red data(LSB) Note 2
+36 GND P Power Ground
+37 DCLK I Sample clock
+38 GND P Power Ground
+39 L/R I Left / right selection Note
+40 U/D I Up/down selection Note
+41 V GH P Gate ON Voltage
+42 V GL P Gate OFF Voltage
+43 AV DD P Power for Analog Circuit
+44 RESET I Global reset pin.
+45 NC - No connection
+46 V COM I Common Voltage
+47 DITHB I Dithering function
+48 GND P Power Ground
+49 NC - No connection
+50 NC - No connection
