@@ -52,7 +52,8 @@ $$ENDCMP
 # handle OSC3225 generation
 OSC_DEFAULT_FOOTPRINT_MAPPER={
     'OSC3225':'footprint-lib:OSC_3225',
-    'HC49':'Crystal:Crystal_HC49-4H_Vertical'
+    'HC49':'Crystal:Crystal_HC49-4H_Vertical',
+    'OSCDEBUG':'footprint-lib:osc_debug',
 }
 
 DRAW_49S='''S -30 -60 30 60 0 1 0 N
