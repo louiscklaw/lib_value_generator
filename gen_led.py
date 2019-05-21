@@ -59,11 +59,11 @@ $$ENDCMP
 """)
 
 TRANSLATE_DEFAULT_LED_FOOTPRINT={
-    '0402':'LED_SMD:LED_0402_1005Metric',
-    '0603':'LED_SMD:LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder',
-    '0805':'LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder',
-    '1206':'LED_SMD:LED_1206_3216Metric_Pad1.42x1.75mm_HandSolder',
-    '1210':'LED_SMD:LED_1210_3225Metric_Pad1.42x2.65mm_HandSolder'
+    '0402':'footprint-lib:LED_0402_1005Metric',
+    '0603':'footprint-lib:LED_0603_1608Metric',
+    '0805':'footprint-lib:LED_0805_2012Metric',
+    '1206':'footprint-lib:LED_1206_3216Metric',
+    '1210':'footprint-lib:LED_1210_3225Metric'
 }
 
 d_keyword_lookup = {}
