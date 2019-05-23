@@ -6,7 +6,7 @@ M7,1206/SOD*123,700V_1A,M1,https://www.google.com/search?q=M7+datasheet
 SS24,1206/SOD*123,40V_2Amp,SS36
 RS1M,1206/SOD*123,1000V_1A,RS1M,https://www.diodes.com/assets/Datasheets/ds15002.pdf
 US1M,1206/SOD*123,1000V_1A,US1M,https://www.diodes.com/assets/Datasheets/ds16008.pdf
-1N5822_SS34,1206/SOD*123,40V_3Amp,1N5822_SS34
+1N5822_SS34,do214aa,40V_3Amp,1N5822_SS34
 SS36,1206/SOD*123,60V_3Amp,SS36
 SS26,1206/SOD*123,60V_2Amp,SS26
 RS2M,1206/SOD*123,1000V_1.5A,RS2M,https://www.diodes.com/assets/Datasheets/ds15004.pdf
@@ -19,3 +19,4 @@ SS16,1206/SOD*123,60V_1Amp,SS16
 ES1J,1206/SOD*123/DO*214,600V_1A,ES1J,https://www.mouser.com/ds/2/258/ES1A-ES1M(HSMA)-479844.pdf
 ES1D,1206/SOD*123/DO*214,200V_1A,ES1D,https://www.mouser.com/ds/2/258/ES1A-ES1M(HSMA)-479844.pdf
 ES1M,1206/SOD*123/DO*214,1000V_1A,ES1M,https://www.mouser.com/ds/2/258/ES1A-ES1M(HSMA)-479844.pdf
+B5819WS,SOD*323,,,

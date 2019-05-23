@@ -40,7 +40,7 @@ ENDDRAW"""
 
 COMPONENT_F_TEXT=Template("""F0 "D" -50 80 50 H V L CNN
 F1 "$component_name" -280 -80 50 H V L CNN
-F2 "" 0 0 50 V I C CNN
+F2 "$DEFAULT_SD_FOOTPRINT" 0 0 50 V I C CNN
 F3 "" 0 0 50 V I C CNN""")
 
 # COMPONENT_FP_TEXT="""Connector*:*_1x??_*
@@ -71,6 +71,10 @@ $$ENDCMP
 
 ZENER_DIODE_SIZE_TEMPLATE=Template('*D*$SIZE*')
 
+TRANSLATE_DEFAULT_FOOTPRINT={
+    'do214ac':'w_smd_diode:do214ac',
+    'do214aa':'w_smd_diode:do214aa',
+}
 
 d_keyword_lookup = {}
 def readKeywordTable():
@@ -109,11 +113,14 @@ def getLibFile(components):
                 zd_name_original = zd_name.split('_')[0]
                 zd_name_screen = zd_name.split('_')[1]
 
+            default_footprint = zd_footprint.split('/')[0]
             zd_units.append(ZD_LIB_UNIT_TEMPLATE.substitute(
                 component_name= zd_lib_name,
                 FP_TEXT=zd_size_texts,
                 DRAW_TEXT=COMPONENT_DRAW_TEXT,
-                F_TEXT = COMPONENT_F_TEXT.substitute(component_name=zd_lib_name),
+                F_TEXT = COMPONENT_F_TEXT.substitute(
+                    component_name=zd_lib_name,
+                    DEFAULT_SD_FOOTPRINT='' if default_footprint not in TRANSLATE_DEFAULT_FOOTPRINT.keys() else TRANSLATE_DEFAULT_FOOTPRINT[default_footprint]),
                 ALIAS_TEXT=COMPONENT_ALIAS_TEXT.substitute(ALIAS=' '.join([zd_name_original, zd_name_screen ]))
                 ))
 
