@@ -4,7 +4,7 @@ import os,sys
 from string import Template
 import csv
 
-csv_filename = "./pinout_CSVs/cp2102.csv"
+csv_filename = "./pinout_CSVs/fe1_1.csv"
 
 d_multiplex={}
 
