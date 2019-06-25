@@ -12,7 +12,7 @@ L_2.2uH,0603/0805/CD74/CD54/CD32,,(2R2),,test_datasheet
 L_220uH_shielded,CD127,,(221),,test_datasheet
 L_220uH,CD54/CD74,,(221),,test_datasheet
 L_22uH_shielded,1040,,(220),,test_datasheet
-L_22uH,0603/CD54/CD74,,(220),,test_datasheet
+L_22uH,1210/0603/CD54/CD74,,(220),,test_datasheet
 L_3.3uH_shielded,1040,,(471),,test_datasheet
 L_3.3uH,0603/0805/CD54/CD74,,(3R3),,test_datasheet
 L_330uH_shielded,CD127,1A,(331),,test_datasheet
