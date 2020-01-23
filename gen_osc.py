@@ -27,10 +27,10 @@ $O_CONTENT#
 C_LIB_UNIT_TEMPLATE=Template("""#
 # $O_VALUE
 #
-DEF $O_VALUE Y 0 40 N N 1 F N
-F0 "Y" 0 100 50 H V C CNN
-F1 "$O_VALUE" 0 -100 50 H V C CNN
-F2 "$O_DEFAULT_FOOTPRINT" 0 0 50 H I C CNN
+DEF $O_VALUE Y 0 40 Y Y 1 F N
+F0 "Y" 0 -300 50 H V C CNN
+F1 "$O_VALUE" 0 -400 50 H V C CNN
+F2 "$O_DEFAULT_FOOTPRINT" 0 -500 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $$FPLIST
  $OSC_FOOTPRINT
@@ -72,11 +72,18 @@ X 2 2 0 -150 50 U 50 50 1 1 P
 X 3 3 100 0 50 L 50 50 1 1 P
 '''
 
+DRAWING_RECTANGLE='''S -250 250 300 -250 0 1 0 f
+X XIN 1 -350 150 100 R 50 50 1 1 B
+X GND 2 -350 -150 100 R 50 50 1 1 W
+X XOUT 3 400 -150 100 L 50 50 1 1 B
+X GND 4 400 150 100 L 50 50 1 1 W
+'''
+
 OSC_DRAW_MAPPER={
     'HC49':DRAW_49S,
     'MC-156':DRAW_49S,
     'MC-146':DRAW_49S,
-    'OSC3225':DRAWING_3225
+    'OSC3225': [DRAWING_3225, DRAWING_RECTANGLE]
 }
 
 
@@ -116,12 +123,27 @@ def getLibFile(three_digit_codes):
         # r_three_digit_code = 'R'+getThreeDigitCode(int_r_value)
         OSC_DEFAULT_FOOTPRINT = OSC_DEFAULT_FOOTPRINT_MAPPER[osc_footprint] if osc_footprint in OSC_DEFAULT_FOOTPRINT_MAPPER.keys() else OSC_DEFAULT_FOOTPRINT_MAPPER['HC49']
         OSC_DRAWING = OSC_DRAW_MAPPER[osc_footprint] if osc_footprint in OSC_DRAW_MAPPER.keys() else OSC_DRAW_MAPPER['HC49']
-        text_content.append(C_LIB_UNIT_TEMPLATE.substitute(
-            O_VALUE=three_digit_code,
-            OSC_FOOTPRINT='*%s*' % osc_footprint,
-            O_DEFAULT_FOOTPRINT = OSC_DEFAULT_FOOTPRINT,   #
-            OSC_DRAWING = OSC_DRAWING,
-            ))
+
+        if type(OSC_DRAWING) == type([]):
+            # generate additinoal symbol(rectangular) for 3225 type oscillator
+            for osc_single_drawing in OSC_DRAWING:
+                if osc_single_drawing == DRAWING_RECTANGLE:
+                    three_digit_code+= '_r'
+                text_content.append(C_LIB_UNIT_TEMPLATE.substitute(
+                    O_VALUE=three_digit_code,
+                    OSC_FOOTPRINT='*%s*' % osc_footprint,
+                    O_DEFAULT_FOOTPRINT = OSC_DEFAULT_FOOTPRINT,   #
+                    OSC_DRAWING = osc_single_drawing,
+                    ))
+
+
+        else:
+            text_content.append(C_LIB_UNIT_TEMPLATE.substitute(
+                O_VALUE=three_digit_code,
+                OSC_FOOTPRINT='*%s*' % osc_footprint,
+                O_DEFAULT_FOOTPRINT = OSC_DEFAULT_FOOTPRINT,   #
+                OSC_DRAWING = OSC_DRAWING,
+                ))
 
     text_to_write = C_LIB_TEMPLATE.substitute(O_CONTENT=''.join(text_content))
     text_to_write = text_to_write.replace('\n\n','\n')

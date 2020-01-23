@@ -3,3 +3,7 @@
 .vscode
 *.bak
 *.tmp
+
+parser/JLCPCB/jlcpcb_resistors.dcm
+*/**/*.dcm
+*/**/*.lib
